@@ -33,8 +33,8 @@ Le site se compose des pages suivantes :
 
 - User,
     - Admin,
-- Annonce,
-    - Annonce sponsorisée
+- Projet,
+    - Projet mit en avant
 - Message,
 
 ### Descrition des fonctions
@@ -49,6 +49,7 @@ Le site se compose des pages suivantes :
     - Status
         - Actif, Terminé avec succès ou fail.
     - Date limite,
+    - Date de création
     - Commentaires
 
 - Utilisateur,
@@ -61,7 +62,49 @@ Le site se compose des pages suivantes :
             - Droits
 
 
+### Structure de la base de données
+
+- Projet
+    - UUID
+    - owner
+    - participants
+    - creation_date
+    - is_featured
+    - title
+    - tags
+    - status
+    - limit_date
+    - pictures
+    - resume
+    - description
+    
+- User
+    - UUID
+    - username
+    - email
+    - password
+    - profile picture
+    - biography
+    - is_admin
+    - date_creation
+    - is_premium
+
+- Comments
+    - UUID
+    - Project
+    - Text
+    - user
+    - date
+
+- Messages
+    - user_from
+    - user_to
+    - date
+    - text
+
 ### Liens et notes
 
 - PHP MVC : https://www.sitepoint.com/the-mvc-pattern-and-php-1/
+- Hash et salt des mots de passe : https://openclassrooms.com/courses/securiser-les-mots-de-passe-des-utilisateurs-avec-php
+- Filtrer les infos utilisateur : https://openclassrooms.com/courses/les-filtres-en-php-pour-valider-les-donnees-utilisateur
 - Checklist : http://webdevchecklist.com/

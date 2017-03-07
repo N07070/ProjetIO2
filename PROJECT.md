@@ -77,8 +77,8 @@ Le site se compose des pages suivantes :
     - pictures
     - resume
     - description
-    
-- User
+
+- utilisateurs
     - UUID
     - username
     - email

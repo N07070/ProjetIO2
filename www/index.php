@@ -39,10 +39,10 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             include("../php/Projet.php");
             // If we need to paginate
             if (isset($_GET["p"]) && !empty($_GET["p"]) && is_int($_GET["p"])) {
-                $projects_to_display = get_projects($_GET["p"]);
+                $projects_to_display = get_all_projects($_GET["p"]);
             }else{
             // Get the 10 last projects
-                $projects_to_display = get_projects();
+                $projects_to_display = get_all_projects();
             }
             // Display the homepage
             display_homepage($projects_to_display);

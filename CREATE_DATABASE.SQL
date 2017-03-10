@@ -7,12 +7,15 @@ CREATE TABLE IF NOT EXISTS utilisateurs(
     biography TEXT NOT NULL,
     is_admin INT NOT NULL,
     date_creation TIMESTAMP NOT NULL,
-    is_premium INT NOT NULL
+    is_premium INT NOT NULL,
+    project_participating TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS projets (
     uuid TEXT NOT NULL,
     owner TEXT NOT NULL,
+    nbr_upvote BIGINT NOT NULL,
+    nbr_downvote BIGINT NOT NULL,
     participants TEXT NOT NULL,
     creation_date TIMESTAMP NOT NULL,
     is_featured INT NOT NULL,
@@ -28,14 +31,14 @@ CREATE TABLE IF NOT EXISTS projets (
 CREATE TABLE IF NOT EXISTS commentaires (
     uuid TEXT NOT NULL,
     project TEXT NOT NULL,
-    text TEXT NOT NULL,
+    commentaire TEXT NOT NULL,
     user TEXT NOT NULL,
-    date TIMESTAMP NOT NULL
+    date_send TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS messages (
     user_from TEXT NOT NULL,
     user_to TEXT NOT NULL,
-    date TIMESTAMP NOT NULL,
-    text TEXT NOT NULL
+    date_send TIMESTAMP NOT NULL,
+    text_message TEXT NOT NULL
 )

@@ -64,8 +64,10 @@ Le site se compose des pages suivantes :
 
 ### Structure de la base de données
 
-- Projet
-    - UUID
+- projects
+    - uuid
+    - nbr_upvote
+    - nbr_downvote
     - owner
     - participants
     - creation_date
@@ -78,21 +80,21 @@ Le site se compose des pages suivantes :
     - resume
     - description
 
-- utilisateurs
-    - UUID
+- users
+    - uuid
     - username
     - email
     - password
-    - profile picture
+    - profile_picture
     - biography
     - is_admin
     - date_creation
     - is_premium
 
-- Comments
+- comments
     - UUID
-    - Project
-    - Text
+    - project
+    - comments
     - user
     - date
 
@@ -101,6 +103,19 @@ Le site se compose des pages suivantes :
     - user_to
     - date
     - text
+
+### Algorithme de classement pour la page d'index
+
+*Ensuite, l'utilisateur pourra classer dans la recherche en fonction de ce qu'iel veut*
+
+- Variables
+    - Ratio : 0.6 ( 0 - 1 )
+        - Nombre d'upvote / Nombre de downvote
+    - Date de publication de projet : 0.1 ( 1 - 0 )
+        - décrémente de façon logarithmique
+        - Par rapport au moment où l'utilisateur consulte la page.
+    - Ratio d'intérêt : 0.3
+        - Nombre de participant.es intéressé.es / nombres de votes  ( 0 - 1 )
 
 ### Liens et notes
 

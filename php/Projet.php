@@ -31,6 +31,10 @@ function display_homepage(projects_to_display){
     }
 }
 
+function display_project_list(projects_to_display){
+
+}
+
 function compute_ratio(project_uuid){
 
 }

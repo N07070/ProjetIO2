@@ -6,8 +6,7 @@ include_once("../php/ConnectionBaseDeDonnee.php");
 if(isset($_GET["page"]) && !empty($_GET["page"])){
     switch ($_GET["page"]) {
         case 'search':
-            echo("<a href='http://localhost:8080/?page='>home</a>");
-            break;
+            include("../../search.php");
         case 'project':
             // Get a project's id
             echo("<a href='http://localhost:8080/?page='>home</a>");

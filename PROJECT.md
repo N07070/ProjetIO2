@@ -114,8 +114,12 @@ Le site se compose des pages suivantes :
     - Date de publication de projet : 0.1 ( 1 - 0 )
         - décrémente de façon logarithmique
         - Par rapport au moment où l'utilisateur consulte la page.
+        - On ne montre jamais un projet vieux de plus de 3 mois
     - Ratio d'intérêt : 0.3
         - Nombre de participant.es intéressé.es / nombres de votes  ( 0 - 1 )
+
+### Architecture
+
 
 ### Liens et notes
 

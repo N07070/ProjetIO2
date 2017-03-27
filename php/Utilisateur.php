@@ -52,13 +52,13 @@ function create_new_user($username, $password, $email, $profile_picture, $biogra
 
     $req->closeCursor();
 
-    // the username is available
-    $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE username = ? ');
-    $req->execute(array($username));
-    if(empty($req)){
-        $username_is_ok = true;
+    // the email is available ?
+    $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
+    $req->execute(array($email));
+    if(empty($req) && filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $email_is_ok = true;
     }else{
-        $username_is_ok = false;
+        $email_is_ok = false;
     }
 
     $req->closeCursor();

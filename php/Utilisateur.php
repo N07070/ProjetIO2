@@ -78,6 +78,8 @@ function create_new_user($username, $password, $email, $profile_picture, $biogra
 
         // create UUID
 
+        // move profile picture to the folder with profile pictures.
+
         // insert into database
 
     }else{

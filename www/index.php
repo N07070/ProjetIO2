@@ -46,6 +46,7 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             }
             // Display the homepage
             display_homepage($projects_to_display);
+            echo("<img scr='../cat.jpg'>");
             break;
     }
 }

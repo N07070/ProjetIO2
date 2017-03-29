@@ -57,6 +57,7 @@ function get_project_age($project){
     return $since_start;
 }
 
+// gets an double array with the projects
 function display_homepage($projects_to_display){
     // Check if some of the projects are featured
     $featured_projects = array();
@@ -67,7 +68,9 @@ function display_homepage($projects_to_display){
     }
 
     if(!empty($featured_projects)){
-
+        foreach ($featured_projects as $one_project) {
+            echo(?> <?php);
+        }
     }
 
     foreach ($projects_to_display as $project) {

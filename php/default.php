@@ -8,7 +8,7 @@ function get_all_projects($start){
     if(isset($start) && is_int($start)){
         // Get the $start
         $req = $database_connexion->prepare('SELECT * FROM projects LIMIT ?,200 ');
-        $req->execute(array($start));
+        $req->execute(array($start * 10));
     }else {
         $req = $database_connexion->prepare('SELECT * FROM projects LIMIT 200 ');
         $req->execute(array($start));
@@ -69,12 +69,16 @@ function display_homepage($projects_to_display){
 
     if(!empty($featured_projects)){
         foreach ($featured_projects as $one_project) {
-            echo(?> <?php);
+            // TODO
+            print_r($one_project);
         }
     }
 
     foreach ($projects_to_display as $project) {
-        # code...
+        if (!$project["is_featured"]) {
+            // TODO
+            print_r($project)
+        }
     }
 }
 ?>

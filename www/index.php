@@ -11,7 +11,8 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         case 'search':
             require("../php/search.php");
         case 'project':
-            require("../php/project.php");
+            require("../../project.php");
+            pwd();
             // Get a project's id
 
             break;
@@ -44,6 +45,7 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         default:
             // Connect to the database to get the projects
             include("../php/default.php");
+            // echo "hello world";
             // If we need to paginate
             if (isset($_GET["p"]) && !empty($_GET["p"]) && is_int($_GET["p"])) {
                 $projects_to_display = get_all_projects($_GET["p"]);
@@ -53,9 +55,23 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             }
             // Display the homepage
             display_homepage($projects_to_display);
-            echo("<img scr='../cat.jpg'>");
+            // echo("<img scr='../cat.jpg'>");
             break;
     }
+} else {
+    // Connect to the database to get the projects
+    include("../php/default.php");
+    // If we need to paginate
+    if (isset($_GET["p"])&& !empty($_GET["p"])  && $_GET["p"] > 0) {
+        $projects_to_display = get_all_projects($_GET["p"]);
+    }else{
+    // Get the 10 last projects
+        $projects_to_display = get_all_projects(null);
+        // echo($_GET["p"]);
+    }
+    // Display the homepage
+    display_homepage($projects_to_display);
+    echo("<img scr='img/cat.jpg'>");
 }
 
 ?>

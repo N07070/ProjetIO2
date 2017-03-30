@@ -17,3 +17,14 @@
 
 
 /* ---  page --- */
+
+
+/* --- other page --- */
+
+.error {
+    display: inline-block;
+    background-color: rgba(255, 0, 0, 0.5);
+    color: darkred;
+    height: 2em;
+    border: solid 2px red;
+}

@@ -1,4 +1,5 @@
 <?php
+require_once("errors.php");
 // Gets all the 200 last projets, class them, and return
 // the top 15 projects
 function get_all_projects($start){
@@ -20,14 +21,16 @@ function get_all_projects($start){
             $req->execute();
             $projects = $req->fetchAll();
         } catch (Exception $e) {
+            throw_error(500);
             die('Error getting the projects ' . $e->getMessage());
         }
     }
+    throw_error(500);
     // Close the connexion to the database
     $req->closeCursor();
 
     // Sort the array with the Algorithme
-    if(!uasort($projects, 'sort_projects')){
+    if(!uasort($projects, 'sort_projects_hot')){
         // Error gestion
     }
 
@@ -89,6 +92,9 @@ function display_homepage($projects_to_display){
 
     require("../html/header.php");
     require("Utilisateur.php");
+
+    throw_error(500);
+
 
     foreach ($projects_to_display as $project) {
         if ($project["is_featured"]) {

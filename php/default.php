@@ -38,8 +38,9 @@ function get_all_projects($start){
 
 // Takes two projects in the form of an array,
 // and sorts them for uasort();
-function sort_projects($a, $b){
+function sort_projects_hot($a, $b){
     // TODO : put up the real ratio
+
 
     $ratio_a = ($a["nbr_upvote"] - $a["nbr_downvote"]) * 0.6;
     $ratio_b = ($b["nbr_upvote"] - $b["nbr_downvote"]) * 0.6 ;
@@ -61,6 +62,14 @@ function sort_projects($a, $b){
     }
 }
 
+function sort_projects_new($projects) {
+    # code...
+}
+
+function sort_projects_controversial($projects) {
+
+}
+
 // function count_participants($project){
 //     // This might need to be better. For the moment, as the participant field
 //     // seperates the users by a comma, it symply counts the number of commas
@@ -78,6 +87,9 @@ function display_homepage($projects_to_display){
     // Check if some of the projects are featured
     $featured_projects = array();
 
+    require("../html/header.php");
+    require("Utilisateur.php");
+
     foreach ($projects_to_display as $project) {
         if ($project["is_featured"]) {
             $featured_projects[] = $project;
@@ -88,19 +100,25 @@ function display_homepage($projects_to_display){
         foreach ($featured_projects as $one_project) {
             // TODO
             echo("
-            <div class='featured_project'>
-                <h2 class='title_fp'>".$one_project['title']."</h2>
-                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - ".$one_project['owner']." </small>
+            <div class='featuredProject'>
+                <h2 class='titleFp'>".$one_project['title']."</h2>
+                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - ".get_user_from_uuid($one_project['owner'])." </small>
             </div>");
 
         }
     }
 
-    foreach ($projects_to_display as $project) {
-        if (!$project["is_featured"]) {
-            // TODO
-            // print_r($project);
+    foreach ($projects_to_display as $one_project) {
+        if (!$one_project["is_featured"]) {
+        echo("
+            <div class='project'>
+                <h2 class='title_project'>".$one_project['title']."</h2>
+                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - ". get_user_from_uuid($one_project['owner'])." </small>
+            </div>");
+
         }
     }
+
+    require("../html/footer.php");
 }
 ?>

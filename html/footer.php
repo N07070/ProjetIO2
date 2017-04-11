@@ -1,5 +1,5 @@
     </body>
     <footer>
-    © DoMe -  <?php time("Y"); ?>
+    © DoMe -  <?php echo(date("Y")); ?>
     </footer>
 </html>

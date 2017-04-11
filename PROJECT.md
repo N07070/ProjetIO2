@@ -157,3 +157,4 @@ def hot(ups, downs, date):
 - Hash et salt des mots de passe : https://openclassrooms.com/courses/securiser-les-mots-de-passe-des-utilisateurs-avec-php
 - Filtrer les infos utilisateur : https://openclassrooms.com/courses/les-filtres-en-php-pour-valider-les-donnees-utilisateur
 - Checklist : http://webdevchecklist.com/
+- Password php : https://www.sitepoint.com/hashing-passwords-php-5-5-password-hashing-api/

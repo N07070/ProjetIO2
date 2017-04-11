@@ -44,7 +44,6 @@ function get_all_projects($start){
 function sort_projects_hot($a, $b){
     // TODO : put up the real ratio
 
-
     $ratio_a = ($a["nbr_upvote"] - $a["nbr_downvote"]) * 0.6;
     $ratio_b = ($b["nbr_upvote"] - $b["nbr_downvote"]) * 0.6 ;
 

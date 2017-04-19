@@ -1,1 +1,5 @@
-display_search_results();
+<?php
+function display_search_results(){
+    
+};
+?>

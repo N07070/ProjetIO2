@@ -1,5 +1,4 @@
 <?php
-require_once("errors.php");
 // Gets all the 200 last projets, class them, and return
 // the top 15 projects
 function get_all_projects($start){

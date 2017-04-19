@@ -12,8 +12,7 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         case 'search':
             require("../php/search.php");
         case 'project':
-            require("../../project.php");
-            pwd();
+            require("../php/project.php");
             // Get a project's id
 
             break;
@@ -24,11 +23,14 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             break;
         case 'login':
             require("../php/login.php");
-            require("../html/header.php");  
-            login_signup_user();
+            require("../html/header.php");
+            login_signup_user($_POST['options'],$_POST['username'],$_POST['password_1'],$_POST['password_2'],$_POST['email'],$_POST['profile_picture'],$_POST['biography']);
             require("../html/footer.php");
             break;
-
+        case 'logout':
+            require("../php/login.php");
+            logout_user( /*#*/ );
+            break;
         case 'profile':
             // Make the difference between a user and an admin.
             // For that, it's very simple to just add a few options.

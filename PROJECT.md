@@ -158,3 +158,4 @@ def hot(ups, downs, date):
 - Filtrer les infos utilisateur : https://openclassrooms.com/courses/les-filtres-en-php-pour-valider-les-donnees-utilisateur
 - Checklist : http://webdevchecklist.com/
 - Password php : https://www.sitepoint.com/hashing-passwords-php-5-5-password-hashing-api/
+- Clean inputs http://stackoverflow.com/questions/129677/whats-the-best-method-for-sanitizing-user-input-with-php

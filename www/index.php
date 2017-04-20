@@ -24,7 +24,7 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         case 'login':
             require("../php/login.php");
             require("../html/header.php");
-            login_signup_user($_POST['options'],$_POST['username'],$_POST['password_1'],$_POST['password_2'],$_POST['email'],$_POST['profile_picture'],$_POST['biography']);
+            login_signup_user($_POST['options'],$_POST['username'],$_POST['password_1'],$_POST['password_2'],$_POST['email'],$_FILES['profile_picture'],$_POST['biography']);
             require("../html/footer.php");
             break;
         case 'logout':

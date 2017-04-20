@@ -7,29 +7,20 @@ function display_login_form(){
 
 function display_signup_form(){
     require("../html/signup_form.php");
+}
 
 function logout_user(){
     // Destroy the user session
     return false;
 }
 
-function signup_user($username, $password_1, $password_2, $email, $profile_picture, $biography){
-    if(!create_new_user($username, $password_1, $password_2, $email, $profile_picture, $biography)){
-        throw_error(500);
-    }else {
-        display_message("Signup successfull ! Welcome !");
-    }
-}
 
 
 function login_signup_user($option,$username, $password_1, $password_2, $email, $profile_picture, $biography){
-    if(!empty($options)){
+    if(!empty($option)){
         if($option == 'login_user'){
 
-            $username = mysql_real_escape_string($username);
-            $password = mysql_real_escape_string($password);
-
-            if(!login_user($username,$password)){
+            if(!login_user($username,$password_1)){
                 throw_error(401);
             }else {
                 // Create sessions
@@ -38,7 +29,11 @@ function login_signup_user($option,$username, $password_1, $password_2, $email, 
             }
         //  Signup new user
         } elseif ($option == 'signup_user' ) {
-            signup_user($username, $password_1, $password_2, $email, $profile_picture, $biography);
+            if(!create_new_user($username, $password_1, $password_2, $email, $profile_picture, $biography)){
+                throw_error(500);
+            }else {
+                display_message("Signup successfull ! Welcome !");
+            }
         // Logout and destroy the sessions
         } else {
             display_login_form();
@@ -49,4 +44,5 @@ function login_signup_user($option,$username, $password_1, $password_2, $email, 
         display_signup_form();
     }
 }
+
 ?>

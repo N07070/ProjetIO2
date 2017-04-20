@@ -5,14 +5,8 @@ include 'UUID.php';
 // Create a new user in the database
 function create_new_user($username, $password_1, $password_2, $email, $profile_picture, $biography) {
 
-    // Make the arguments safe.
-    // Let out password_2 and profile_picture because one will never make it a SQL
-    // statement, and the other is a file.
-    $username = mysql_real_escape_string($username);
-    $password_1 = mysql_real_escape_string($password_1 );
-    $email= mysql_real_escape_string($email);
-    $biography = mysql_real_escape_string($biography );
-
+    $error['number'] = 0; // no errors
+    $error['message'] = "";
 
     try {
         $database_connexion = connect_to_database();
@@ -24,13 +18,17 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         die('Error connecting to database: ' . $e->getMessage());
     }
 
+    $password_is_ok = false;
+    $username_is_ok = false;
+    $email_is_ok = false;
+    $bio_is_ok = false;
+    $profile_ok = false;
+
     // the username exists
     if(empty($username_is_in_bdd)){
-        $username_is_ok = true;
-    }else{
-        $username_is_ok = false;
+        $error['number'] = 0; // no errors
+        $error['message'] = "That username already exists. Sorry!";
     }
-
 
     // the password matches the requirements
     // http://code.runnable.com/UmrnTejI6Q4_AAIM/how-to-validate-complex-passwords-using-regular-expressions-for-php-and-pcre
@@ -45,16 +43,15 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     (?=\S*[\W]) = and at least a special character (non-word characters)
     $ = end of the string
     */
-
     if($password_1 == $password_2){
-        $password_is_ok = true;
+        $error['number'] = 1; // no errors
+        $error['message'] = "Both passwords do not match.";
     }
 
-    if ($password_is_ok && !empty($password_1) &&
+    if (!empty($password_1) &&
     preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
-        $password_is_ok = true;
-    } else {
-        $password_is_ok = false;
+        $error['number'] = 1; // no errors
+        $error['message'] = "You need to choose a better password.";
     }
 
     // the email is available ?
@@ -68,13 +65,12 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     }
 
     if(empty($email_is_in_bdd) && filter_var($email, FILTER_VALIDATE_EMAIL)){
-        $email_is_ok = true;
-    }else{
-        $email_is_ok = false;
+        $error['number'] = 1; // no errors
+        $error['message'] = "The email is invalid.";
     }
 
     // the biography isn't too long ?
-    if (len(htmlspecialchars($biography)) < 501) {
+    if (strlen(htmlspecialchars($biography)) < 501) {
         $bio_is_ok = true;
     } else {
         $bio_is_ok = false;
@@ -85,6 +81,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     $target_file = $target_dir . basename($_FILES["profile_picture"]["name"]);
     $profile_ok = true;
     $image_file_type = pathinfo($target_file,PATHINFO_EXTENSION);
+
     // Check if image file is a actual image or fake image
     if(isset($_POST["signup"])) {
         $check = getimagesize($_FILES["profile_picture"]["tmp_name"]);
@@ -95,6 +92,8 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
             $profile_ok = false;
         }
     }
+
+
     // Check if file already exists
     if (file_exists($target_file)) {
         $profile_ok = false;
@@ -103,12 +102,20 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     if ($_FILES["profile_picture"]["size"] > 5000000) {
         $profile_ok = false;
     }
+
     // Allow certain file formats
-    if($imageFileType != "jpg" && $imageFileType != "png" &&
-    $imageFileType != "jpeg" && 
-    $imageFileType != "gif" ) {
+    if($image_file_type!= "jpg" && $image_file_type != "png" &&
+    $image_file_type != "jpeg" &&
+    $image_file_type != "gif" ) {
         $profile_ok = false;
     }
+
+    echo("1".$password_is_ok);
+    echo("<br>2".$username_is_ok);
+    echo("<br>3".$email_is_ok);
+    echo("<br>4".$bio_is_ok);
+    echo("<br>5".$profile_ok);
+
 
     if (!empty($username) && $username_is_ok &&
         !empty($password_1) && $password_is_ok &&

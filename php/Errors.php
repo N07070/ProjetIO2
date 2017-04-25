@@ -36,7 +36,7 @@ function display_message($message){
     echo("
     <div class='message'>
         <pre>
-        ".$error_message."
+        ".$message."
         </pre>
     </div>");
 }

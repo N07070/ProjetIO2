@@ -12,21 +12,15 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE username = ? ');
         $req->execute(array($username));
-        $username_is_in_bdd = $req->fetch();
+        $username_is_in_bdd = $req->fetchAll();
         $req->closeCursor();
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
     }
 
-    $password_is_ok = false;
-    $username_is_ok = false;
-    $email_is_ok = false;
-    $bio_is_ok = false;
-    $profile_ok = false;
-
     // the username exists
-    if(empty($username_is_in_bdd)){
-        $error['number'] = 0; // no errors
+    if(!empty($username_is_in_bdd)){
+        $error['number'] = 1;
         $error['message'] = "That username already exists. Sorry!";
     }
 
@@ -43,85 +37,78 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     (?=\S*[\W]) = and at least a special character (non-word characters)
     $ = end of the string
     */
-    if($password_1 == $password_2){
-        $error['number'] = 1; // no errors
+    if($password_1 != $password_2){
+        $error['number'] = 1;
         $error['message'] = "Both passwords do not match.";
     }
 
-    if (!empty($password_1) &&
-    preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
-        $error['number'] = 1; // no errors
+    // && preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)
+    if (empty($password_1)){
+        $error['number'] = 1;
         $error['message'] = "You need to choose a better password.";
     }
 
     // the email is available ?
+    print_r($email);
     try {
         $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
         $req->execute(array($email));
-        $email_is_in_bdd = $req->fetch();
+        $email_is_in_bdd = $req->fetchAll();
         $req->closeCursor();
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
     }
 
-    if(empty($email_is_in_bdd) && filter_var($email, FILTER_VALIDATE_EMAIL)){
-        $error['number'] = 1; // no errors
+    print_r($email_is_in_bdd);
+
+    if(!empty($email_is_in_bdd) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $error['number'] = 1;
         $error['message'] = "The email is invalid.";
     }
 
     // the biography isn't too long ?
-    if (strlen(htmlspecialchars($biography)) < 501) {
-        $bio_is_ok = true;
-    } else {
-        $bio_is_ok = false;
+    if (strlen(htmlspecialchars($biography)) > 500) {
+        $error['number'] = 1; // no errors
+        $error['message'] = "The biography is invalid.";
     }
+
+    // Beyond this point is no hope.
 
     // The image for the profile is an image and is in the requirements
     $target_dir = "../www/uploads/";
     $target_file = $target_dir . basename($_FILES["profile_picture"]["name"]);
-    $profile_ok = true;
     $image_file_type = pathinfo($target_file,PATHINFO_EXTENSION);
 
     // Check if image file is a actual image or fake image
-    if(isset($_POST["signup"])) {
-        $check = getimagesize($_FILES["profile_picture"]["tmp_name"]);
-        if($check != false) {
-            // echo "File is an image - " . $check["mime"] . ".";
-            $profile_ok = true;
-        } else {
-            $profile_ok = false;
-        }
+    $check = getimagesize($_FILES["profile_picture"]["tmp_name"]);
+    if($check == false) {
+        $error['number'] = 1;
+        $error['message'] = "The profile picture is invalid.";
     }
 
 
     // Check if file already exists
+    // This error should never be shown, as the picture is named after
+    // the UUID of a user.
     if (file_exists($target_file)) {
-        $profile_ok = false;
+        $error['number'] = 1;
+        $error['message'] = "This profile picture already exists.";
     }
     // Check file size (5Mb)
     if ($_FILES["profile_picture"]["size"] > 5000000) {
-        $profile_ok = false;
+        $error['number'] = 1;
+        $error['message'] = "This profile picture is too big. 5Mb is the maximum.";
     }
 
     // Allow certain file formats
     if($image_file_type!= "jpg" && $image_file_type != "png" &&
     $image_file_type != "jpeg" &&
     $image_file_type != "gif" ) {
-        $profile_ok = false;
+        $error['number'] = 1;
+        $error['message'] = "This profile picture is invalid, please use jpg, png or gifs.";
     }
-
-    echo("1".$password_is_ok);
-    echo("<br>2".$username_is_ok);
-    echo("<br>3".$email_is_ok);
-    echo("<br>4".$bio_is_ok);
-    echo("<br>5".$profile_ok);
-
-
-    if (!empty($username) && $username_is_ok &&
-        !empty($password_1) && $password_is_ok &&
-        !empty($email) && $email_is_ok &&
-        !empty($biography) && $bio_is_ok &&
-        !empty($profile_picture) && $profile_ok) {
+    echo($error['message']);
+    if (!$error['number']) {
 
         // create UUID for the user
         $v4uuid = UUID::v4();
@@ -130,8 +117,8 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         try {
 
             $extension = pathinfo($target_file);
-            $destination_of_file = $target_dir . $v4uuid . $extension['extension'];
-            $name_of_file = $v4uuid . $extension['extension'];
+            $destination_of_file = $target_dir . $v4uuid .".". $extension['extension'];
+            $name_of_file = $v4uuid ."." .$extension['extension'];
             move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $destination_of_file);
         } catch (Exception $e) {
             die('Error uploading file: ' . $e->getMessage());
@@ -148,13 +135,15 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
             // $biography,
         try {
             $req = $database_connexion->prepare('INSERT INTO utilisateurs(uuid, username, email, password, profile_picture, biography, is_admin, is_premium) VALUES(?,?,?,?,?,?,?,?)');
-            $req->execute(array($v4uuid, $username, $hashed_password, $email, $name_of_file, $biography, 0, 0));
+            $req->execute(array($v4uuid, $username, $email, $hashed_password, $name_of_file, $biography, 0, 0));
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
         }
+
         return true;
     }else{
+        echo($error['message']);
         return false;
     }
 }
@@ -175,6 +164,8 @@ function update_user_profil($username, $password, $email, $profile_picture, $bio
 
     return false;
 }
+
+function get_uuid_from_username($user_)
 
 // Done
 function get_user_from_uuid($user_uuid){
@@ -198,8 +189,7 @@ function get_user_from_uuid($user_uuid){
 
 // done
 function login_user($username, $password){
-    $password = mysql_real_escape_string($password);
-    $username = mysql_real_escape_string($username);
+
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('SELECT password FROM utilisateurs WHERE username = ? ');
@@ -216,5 +206,20 @@ function login_user($username, $password){
     }else{
         return false;
     }
+}
+
+function display_user($user_email){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
+        $req->execute(array($user_email));
+        $user_data = $req->fetchAll();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+    return $user_data;
+
 }
 ?>

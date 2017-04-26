@@ -19,23 +19,34 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         case 'user':
             require("../php/user.php");
             // Get the user's id
-
+            require("../html/header.php");
+            require("../html/navigation.php");
+            user();
+            require("../html/footer.php");
             break;
         case 'login':
             require("../php/login.php");
             require("../html/header.php");
+            require '../html/navigation.php';
             login_signup_user($_POST['options'],$_POST['username'],$_POST['password_1'],$_POST['password_2'],$_POST['email'],$_FILES['profile_picture'],$_POST['biography']);
             require("../html/footer.php");
             break;
         case 'logout':
             require("../php/login.php");
-            logout_user( /*#*/ );
+            logout_user();
             break;
         case 'profile':
             // Make the difference between a user and an admin.
             // For that, it's very simple to just add a few options.
             require("../php/profile.php");
-
+            require_once("../php/Utilisateur.php");
+            require '../html/navigation.php';
+            if($_SESSION['login'] && !isset($_GET['uuid'])){
+                display_user_profile($_SESSION['uuid']);
+            } elseif (isset($_GET['uuid']) && !empty($_GET['uuid'])) {
+                display_user_profile($_GET['uuid']);
+            }
+            require("../html/footer.php");
             break;
         case 'messages':
             require("../php/messages.php");

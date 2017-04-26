@@ -42,14 +42,13 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         $error['message'] = "Both passwords do not match.";
     }
 
-    // && preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)
-    if (empty($password_1)){
+
+    if (empty($password_1) && preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
         $error['number'] = 1;
         $error['message'] = "You need to choose a better password.";
     }
 
     // the email is available ?
-    print_r($email);
     try {
         $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
         $req->execute(array($email));
@@ -58,8 +57,6 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
     }
-
-    print_r($email_is_in_bdd);
 
     if(!empty($email_is_in_bdd) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
         $error['number'] = 1;
@@ -72,7 +69,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         $error['message'] = "The biography is invalid.";
     }
 
-    // Beyond this point is no hope.
+    // Beyond this point, loose all hope.
 
     // The image for the profile is an image and is in the requirements
     $target_dir = "../www/uploads/";
@@ -107,7 +104,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
         $error['number'] = 1;
         $error['message'] = "This profile picture is invalid, please use jpg, png or gifs.";
     }
-    echo($error['message']);
+
     if (!$error['number']) {
 
         // create UUID for the user
@@ -143,32 +140,105 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
 
         return true;
     }else{
-        echo($error['message']);
-        return false;
+        return $error['message'];
     }
 }
 
 // TODO
 function delete_user($uuid,$password){
 
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT password FROM utilisateurs WHERE uuid = ?');
+        $req->execute(array($uuid));
+        $password_hased = $req->fetch();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
     // Is the password correct
+    if(password_verify($password,$password_hased)){
+        try {
+            $database_connexion = connect_to_database();
+            // Delete the user
+            // - Set his profile picture to a grey background,
+            // - Set his password and email to null
+            // - Set this biography to [deleted]
+            // - Set his admin and premium status to 0.
+            $database_connexion->prepare('UPDATE utilisateurs SET email = ?, password = ?, profile_picture = ?, biography = ?, is_admin = ?, is_premium = ? WHERE uuid = ?');
+            $database_connexion->execute(array(null,null,"deleted_user.png","[deleted]",0,0, $uuid));
+            // Set the project to inactive and precise in the resume that the user is gone.
+            $database_connexion->prepare('UPDATE projets SET is_featured = ?, status = ?, resume = ? WHERE owner = ?');
+            $database_connexion->execute(array(0,0,"The user has deleted his or her account.", $uuid));
+            // Replace all the user comments by "[deleted]"
+            $database_connexion->prepare('UPDATE commentaires SET commentaire WHERE user = ?');
+            $database_connexion->execute(array("[deleted]", $uuid));
 
-    // those a user with this uuid exist ?
-
-    return false;
-
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
-// TODO
-function update_user_profil($username, $password, $email, $profile_picture, $biography){
+function update_user_profil($uuid, $password, $email, $profile_picture, $biography){
+    // TODO :
+    // Make it possible for the user to change his/her password, username.
 
-    return false;
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT password FROM utilisateurs WHERE uuid = ?');
+        $req->execute(array($uuid));
+        $password_hased = $req->fetch();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+    // Is the password correct
+    if(password_verify($password,$password_hased)){
+        try {
+            $database_connexion = connect_to_database();
+            $database_connexion->prepare('UPDATE utilisateurs SET email = ?, profile_picture = ?, biography = ? WHERE uuid = ?');
+            $database_connexion->execute(array($email,$profile_picture,$biography, $uuid));
+
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
-function get_uuid_from_username($user_)
+function get_uuid_from_username($username){
+
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT uuid FROM utilisateurs WHERE username = ? ');
+        $req->execute(array($username));
+        $uuid_of_user = $req->fetch();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+
+    if(empty($uuid_of_user['uuid'])){
+        return false;
+    }else{
+        return $uuid_of_user['uuid'];
+    }
+}
 
 // Done
 function get_user_from_uuid($user_uuid){
+
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('SELECT username FROM utilisateurs WHERE uuid = ? ');
@@ -192,7 +262,7 @@ function login_user($username, $password){
 
     try {
         $database_connexion = connect_to_database();
-        $req = $database_connexion->prepare('SELECT password FROM utilisateurs WHERE username = ? ');
+        $req = $database_connexion->prepare('SELECT password FROM utilisateurs WHERE username = ?');
         $req->execute(array($username));
         $password_hased = $req->fetch();
         $req->closeCursor();
@@ -201,18 +271,18 @@ function login_user($username, $password){
     }
 
     // No need to check that the password is empty or anything, as it will not verify.
-    if(password_verify($password,$password_hased)){
+    if(password_verify($password,$password_hased[0])){ // Do not forget that it returns an array.
         return true;
     }else{
         return false;
     }
 }
 
-function display_user($user_email){
+function display_user($uuid){
     try {
         $database_connexion = connect_to_database();
-        $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
-        $req->execute(array($user_email));
+        $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE uuid = ? ');
+        $req->execute(array($uuid));
         $user_data = $req->fetchAll();
         $req->closeCursor();
     } catch (Exception $e) {
@@ -221,5 +291,24 @@ function display_user($user_email){
 
     return $user_data;
 
+}
+
+function user_exits($uuid){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE uuid = ? ');
+        $req->execute(array($uuid));
+        $userdata = $req->fetchAll();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+
+    if(empty($userdata)){
+        return false;
+    }else{
+        return true;
+    }
 }
 ?>

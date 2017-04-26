@@ -114,6 +114,7 @@ Le site se compose des pages suivantes :
 *Ensuite, l'utilisateur pourra classer dans la recherche en fonction de ce qu'iel veut*
 
 On utilise le même algo que Reddit : https://medium.com/hacking-and-gonzo/how-reddit-ranking-algorithms-work-ef111e33d0d9
+https://gist.github.com/slogsdon/3726272
 
 ```
 # Rewritten code from /r2/r2/lib/db/_sorts.pyx
@@ -159,3 +160,4 @@ def hot(ups, downs, date):
 - Checklist : http://webdevchecklist.com/
 - Password php : https://www.sitepoint.com/hashing-passwords-php-5-5-password-hashing-api/
 - Clean inputs http://stackoverflow.com/questions/129677/whats-the-best-method-for-sanitizing-user-input-with-php
+- http://php.net/manual/en/features.file-upload.multiple.php

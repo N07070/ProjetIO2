@@ -8,25 +8,25 @@ function get_all_projects($start){
     if(isset($start) && $start > 0 && !empty($start)){
         // Get the $start
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets LIMIT ?,200 ');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > CURRENT_TIME LIMIT ? ,200 ');
             $req->execute(array($start * 10));
             $projects = $req->fetchAll();
+            $req->closeCursor();
         } catch (Exception $e) {
             die('Error getting the projects ' . $e->getMessage());
         }
     }else {
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets LIMIT 200');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > CURRENT_TIME LIMIT 200');
             $req->execute();
             $projects = $req->fetchAll();
+            $req->closeCursor();
         } catch (Exception $e) {
             throw_error(500);
             die('Error getting the projects ' . $e->getMessage());
         }
     }
-    throw_error(500);
-    // Close the connexion to the database
-    $req->closeCursor();
+
 
     // Sort the array with the Algorithme
     if(!uasort($projects, 'sort_projects_hot')){
@@ -43,18 +43,47 @@ function get_all_projects($start){
 function sort_projects_hot($a, $b){
     // TODO : put up the real ratio
 
-    $ratio_a = ($a["nbr_upvote"] - $a["nbr_downvote"]) * 0.6;
-    $ratio_b = ($b["nbr_upvote"] - $b["nbr_downvote"]) * 0.6 ;
+    $time_reference = 1493197190;
 
-    // The algo is defined in PROJECT.md
-    // $ratio_a = ($a["nbr_upvote"] / $a["nbr_downvote"]) * 0.6;
-    // $ratio_b = ($b["nbr_upvote"] / $b["nbr_downvote"]) * 0.6 ;
+    $time_a = strtotime($a['creation_date']) - $time_reference;
+    $time_b = strtotime($b['creation_date']) - $time_reference;
 
-    // $interet_a =  (count_participants($a) / ($a["nbr_upvote"] + $a["nbr_downvote"])) * 0.3;
-    // $interet_b =  (count_participants($b) / ($b["nbr_upvote"] + $b["nbr_downvote"])) * 0.3;
-    //
-    // $age_a = get_project_age($a) * 0.1;
-    // $age_b = get_project_age($b) * 0.1 ;
+    $score_a = ($a["nbr_upvote"] - $a["nbr_downvote"]);
+    $score_b = ($b["nbr_upvote"] - $b["nbr_downvote"]);
+
+    if ($score_a > 0) {
+        $y_a = 1;
+    }elseif ($score_a = 0) {
+        $y_a = 0;
+    } else {
+        $y_a = -1;
+    }
+
+    if ($score_b > 0) {
+        $y_b = 1;
+    }elseif ($score_b = 0) {
+        $y_b = 0;
+    } else {
+        $y_b = -1;
+    }
+
+    if(abs($score_a) >= 1){
+        $z_a = abs($score_a);
+    }else {
+        $z_a = 1;
+    }
+
+    if(abs($score_b) >= 1){
+        $z_b = abs($score_b);
+    }else {
+        $z_b = 1;
+    }
+
+    // $y_a = 1 if $score_a > 0 else -1 if $score_a < 0 else 0;
+    // $y_b = 1 if $score_b > 0 else -1 if $score_b < 0 else 0;
+
+    $ratio_a = log($z_a) + ( $y_a * $time_a) / 4500;
+    $ratio_b = log($z_b) + ( $y_b * $time_b) / 4500;
 
     if($ratio_a  > $ratio_b ){
         return 1;
@@ -89,11 +118,13 @@ function display_homepage($projects_to_display){
     $featured_projects = array();
 
     require("../html/header.php");
+    require '../html/navigation.php';
     require("Utilisateur.php");
 
-    throw_error(500);
 
-
+    if (isset($_SESSION['login']) && $_SESSION['login']) {
+        echo(get_user_from_uuid($_SESSION['uuid'])." is logged in.");
+    }
     foreach ($projects_to_display as $project) {
         if ($project["is_featured"]) {
             $featured_projects[] = $project;

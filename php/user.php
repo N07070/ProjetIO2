@@ -68,7 +68,7 @@ function display_create_new_project(){
 
         $result = create_new_project($owner, $title, $tags, $pictures, $resume, $description);
         print_r($result);
-        if($result){
+        if($result == true){
             echo("Ton nouveau projet viens d'être crée. ");
         }else {
             display_error($result['message']);

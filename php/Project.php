@@ -65,24 +65,31 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
     // Move it to uploads/projects/
     // Add the filename to $pictures_path
     // Add $pictures_path to the database
-    foreach ($pictures['profile_picture'] as $picture) {
+
+    $pictures = reArrayFiles($pictures['profile_picture']);
+    $pictures_path = "";
+    $counter = count($pictures) - 1;
+    foreach ($pictures as $picture) {
         try {
-            $extension = pathinfo($picture['name']);
-            $target_dir = "../uploads/projects/";
+            $extension = pathinfo($picture['name'], PATHINFO_EXTENSION);
+            $target_dir = "uploads/projects/";
             $target_file = $v4uuid."-".$counter.".".$extension;
             $destination_of_file = $target_dir . $target_file;
             move_uploaded_file($picture["tmp_name"], $destination_of_file);
-            $pictures_path += $target_file.",";
+            $pictures_path .= $target_file . ",";
+            $counter--;
         } catch (Exception $e) {
             die('Error uploading file: ' . $e->getMessage());
         }
     }
 
+    $date_in_a_month = strtotime(date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))) . " +1 month");
+    $date_in_a_month = date("Y-m-d H:i:s",$date_in_a_month);
+
     try {
         $database_connexion = connect_to_database();
-        $req = $database_connexion->prepare('INSERT INTO projets(uuid, owner, nbr_upvote, nbr_downvote, participants, creation_date, is_featured, title, status, limit_date, pictures, resume, description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        print_r(array($v4uuid, $owner, 1, 0 , $owner.",", date("Y-m-d H:i:s"), 0 , $title, 1 , strtotime( "+1 month", strtotime( date("Y-m-d H:i:s") ) ), $pictures_path, $resume, $description));
-        $req->execute(array($v4uuid, $owner, 1, 0 , $owner.",", date("Y-m-d H:i:s"), 0 , $title, 1 , strtotime( "+1 month", strtotime( date("Y-m-d H:i:s") ) ), $pictures_path, $resume, $description));
+        $req = $database_connexion->prepare('INSERT INTO projets(uuid, owner, nbr_upvote, nbr_downvote, participants, creation_date, is_featured, title, tags, status, limit_date, pictures, resume, description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        $req->execute(array($v4uuid, $owner, 1, 0 , $owner."," , date("Y-m-d H:i:s"), 0 , $title, $tags, 1 , $date_in_a_month , $pictures_path, $resume, $description));
         $req->closeCursor();
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
@@ -128,8 +135,8 @@ function tags_of_new_project_are_valid($tags){
 function get_projects_of_user($uuid){
     try {
         $database_connexion = connect_to_database();
-        $req = $database_connexion->prepare('SELECT * FROM projets WHERE uuid = ?');
-        $req->execute(array($project));
+        $req = $database_connexion->prepare('SELECT * FROM projets WHERE owner = ?');
+        $req->execute(array($uuid));
         $project_data = $req->fetchAll();
         $req->closeCursor();
     } catch (Exception $e) {
@@ -163,6 +170,7 @@ function pictures_are_valid($pictures){
         }
 
         // Allow certain file formats
+        $image_file_type = strtolower($image_file_type);
         if($image_file_type != "jpg" && $image_file_type != "png" &&
         $image_file_type != "jpeg" &&
         $image_file_type != "gif" ) {

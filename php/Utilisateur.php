@@ -278,7 +278,7 @@ function login_user($username, $password){
     }
 }
 
-function display_user($uuid){
+function get_user_data($uuid){
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE uuid = ? ');

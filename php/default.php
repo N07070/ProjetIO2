@@ -136,8 +136,8 @@ function display_homepage($projects_to_display){
             // TODO
             echo("
             <div class='featuredProject'>
-                <h2 class='titleFp'>".$one_project['title']."</h2>
-                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - ".get_user_from_uuid($one_project['owner'])." </small>
+                <h2 class='titleFp'><a href='index.php?page=project&project=".$one_project['uuid']."'>".$one_project['title']."</a></h2>
+                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - <a href='index.php?page=profile&user=".$one_project['owner']."'>". get_user_from_uuid($one_project['owner'])."</a> </small>
             </div>");
 
         }
@@ -147,8 +147,8 @@ function display_homepage($projects_to_display){
         if (!$one_project["is_featured"]) {
         echo("
             <div class='project'>
-                <h2 class='title_project'>".$one_project['title']."</h2>
-                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - ". get_user_from_uuid($one_project['owner'])." </small>
+                <h2 class='title_project'><a href='index.php?page=project&project=".$one_project['uuid']."'>".$one_project['title']."</a></h2>
+                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - <a href='index.php?page=profile&user=".$one_project['owner']."'>". get_user_from_uuid($one_project['owner'])."</a> </small>
             </div>");
 
         }

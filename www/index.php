@@ -14,7 +14,10 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
         case 'project':
             require("../php/project.php");
             // Get a project's id
-
+            require("../html/header.php");
+            require("../html/navigation.php");
+            project();
+            require("../html/footer.php");
             break;
         case 'user':
             require("../php/user.php");
@@ -39,18 +42,17 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             // Make the difference between a user and an admin.
             // For that, it's very simple to just add a few options.
             require("../php/profile.php");
-            require_once("../php/Utilisateur.php");
+            require("../html/header.php");
             require '../html/navigation.php';
-            if($_SESSION['login'] && !isset($_GET['uuid'])){
-                display_user_profile($_SESSION['uuid']);
-            } elseif (isset($_GET['uuid']) && !empty($_GET['uuid'])) {
-                display_user_profile($_GET['uuid']);
-            }
+            profile();
             require("../html/footer.php");
             break;
         case 'messages':
+            require("../html/header.php");
+            require("../html/navigation.php");
             require("../php/messages.php");
 
+            require("../html/footer.php");
             break;
 
         default:

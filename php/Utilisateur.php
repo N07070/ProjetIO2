@@ -1,6 +1,6 @@
 <?php
 
-include 'UUID.php';
+require_once('UUID.php');
 
 // Create a new user in the database
 function create_new_user($username, $password_1, $password_2, $email, $profile_picture, $biography) {

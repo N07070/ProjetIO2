@@ -1,5 +1,4 @@
 <?php
-require_once("UUID.php");
 require_once("Utilisateur.php");
 require_once("ConnectionBaseDeDonnee.php");
 
@@ -99,12 +98,63 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
 
 }
 
-function add_user_to_project(){
+function add_user_to_project($uuid,$project){
+    if(!user_participating_to_project($uuid, $project)){
+        // Get the users participating before
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('SELECT participants FROM projets WHERE uuid = ?');
+            $req->execute(array($project));
+                $participants = $req->fetch();
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
 
+        // Concatenate and add to participants
+
+        $participants .= $uuid . ",";
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('UPDATE projets SET participants = ? WHERE uuid = ?');
+            $req->execute(array($participants, $project));
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
+        return true;
+    }
+    return false;
 }
 
-function delete_project(){
+function user_participating_to_project($uuid,$project){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT participants FROM projets WHERE uuid = ?');
+        $req->execute(array($project));
+        $participants = $req->fetch();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
 
+    if (strpos($participants, $uuid) !== false) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function delete_project($project){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('DELETE FROM projets WHERE uuid = ?');
+        $req->execute(array($project));
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+    return true;
 }
 
 // With a UUID or project name, return true if it exists.
@@ -212,6 +262,25 @@ function reArrayFiles(&$file_post) {
     }
 
     return $file_ary;
+}
+
+function get_project_data($project){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT * FROM projets WHERE uuid = ?');
+        $req->execute(array($project));
+        $project_data = $req->fetchAll();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+
+    if(empty($project_data)){
+        return false;
+    }else{
+        return $project_data;
+    }
 }
 
 ?>

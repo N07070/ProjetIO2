@@ -14,7 +14,8 @@ function display_projects_user(){
             ?>
             <div class="project">
                 <h3 class="project_title"><?php echo($project['title']); ?></h3>
-                <a href="index.php?page=user&options=3&project=<?php echo(project['uuid']); ?>">Paramètres du projet</a>
+                <a href="index.php?page=user&options=3&project=<?php echo($project['uuid']); ?>">Paramètres du projet</a>
+                <a href="index.php?page=user&options=2&project=<?php echo($project['uuid']); ?>">Supprimer le projet</a>
             </div>
             <?php
         }
@@ -25,9 +26,7 @@ function display_projects_user(){
 function display_options(){
     ?> <ul>
         <li><a href="index.php?page=user&options=1">Créer un nouveau projet</a></li>
-        <li><a href="index.php?page=user&options=2">Supprimer un projet</a></li>
-        <li><a href="index.php?page=user&options=3">Créer un nouveau projet</a></li>
-        <li><a href="index.php?page=user&options=4">Créer un nouveau projet</a></li>
+        <li><a href="index.php?page=user&options=4">Changer tes paramètres</a></li>
     </ul> <?php
 
 }
@@ -97,8 +96,12 @@ function display_create_new_project(){
 
 }
 
-function display_delete_project(){
-
+function display_delete_project($project){
+    if(delete_project($project)){
+        ?>
+        <h3> Ton projet viens d'être supprimé.</h3>
+        <?php
+    }
 }
 
 function display_change_project_settings(){
@@ -119,10 +122,10 @@ function user(){
                 display_create_new_project();
                 break;
             case 2:
-                display_delete_project();
+                display_delete_project($_GET['project']);
                 break;
             case 3:
-                display_change_project_settings();
+                display_change_project_settings($_GET['project']);
                 break;
             case 4:
                 display_change_user_settings();

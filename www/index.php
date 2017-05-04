@@ -11,6 +11,11 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
     switch ($_GET["page"]) {
         case 'search':
             require("../php/search.php");
+            require("../html/header.php");
+            require("../html/navigation.php");
+            search();
+            require("../html/footer.php");
+            break;
         case 'project':
             require("../php/project.php");
             // Get a project's id
@@ -54,37 +59,23 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
 
             require("../html/footer.php");
             break;
-
         default:
-            // Connect to the database to get the projects
-            include("../php/default.php");
-            // echo "hello world";
-            // If we need to paginate
-            if (isset($_GET["p"]) && !empty($_GET["p"]) && is_int($_GET["p"])) {
-                $projects_to_display = get_all_projects($_GET["p"]);
-            }else{
-            // Get the 10 last projects
-                $projects_to_display = get_all_projects();
-            }
-            // Display the homepage
-            display_homepage($projects_to_display);
-            // echo("<img scr='../cat.jpg'>");
+            require_once("../php/default.php");
+            require_once("../html/header.php");
+            require_once('../html/navigation.php');
+            require_once("../php/Utilisateur.php");
+            default_page($_GET['p']);
+            require("../html/footer.php");
             break;
     }
 } else {
     // Connect to the database to get the projects
-    include("../php/default.php");
-    // If we need to paginate
-    if (isset($_GET["p"])&& !empty($_GET["p"])  && $_GET["p"] > 0) {
-        $projects_to_display = get_all_projects($_GET["p"]);
-    }else{
-    // Get the 10 last projects
-        $projects_to_display = get_all_projects(null);
-        // echo($_GET["p"]);
-    }
-    // Display the homepage
-    display_homepage($projects_to_display);
-    echo("<img scr='img/cat.jpg'>");
+    require_once("../php/default.php");
+    require_once("../html/header.php");
+    require_once('../html/navigation.php');
+    require_once("../php/Utilisateur.php");
+    default_page($_GET['p']);
+    require("../html/footer.php");
 }
 
 ?>

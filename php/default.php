@@ -117,14 +117,6 @@ function display_homepage($projects_to_display){
     // Check if some of the projects are featured
     $featured_projects = array();
 
-    require("../html/header.php");
-    require '../html/navigation.php';
-    require("Utilisateur.php");
-
-
-    if (isset($_SESSION['login']) && $_SESSION['login']) {
-        echo(get_user_from_uuid($_SESSION['uuid'])." is logged in.");
-    }
     foreach ($projects_to_display as $project) {
         if ($project["is_featured"]) {
             $featured_projects[] = $project;
@@ -133,27 +125,64 @@ function display_homepage($projects_to_display){
 
     if(!empty($featured_projects)){
         foreach ($featured_projects as $one_project) {
-            // TODO
-            echo("
-            <div class='featuredProject'>
-                <h2 class='titleFp'><a href='index.php?page=project&project=".$one_project['uuid']."'>".$one_project['title']."</a></h2>
-                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - <a href='index.php?page=profile&user=".$one_project['owner']."'>". get_user_from_uuid($one_project['owner'])."</a> </small>
-            </div>");
-
+            $one_project['pictures'] = explode(",", $one_project['pictures']);
+            print_r($one_project);
+            ?>
+            <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'><div class='featured_project_main a_project card'>
+                <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
+                <div class="text_project_main">
+                    <h2 class='title_project'>
+                    <?php echo($one_project['title']) ?>
+                    </h2>
+                    <p><?php echo($one_project["resume"]); ?></p>
+                    <small>
+                        <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                        <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>"> <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
+                    </small>
+                </div>
+            </div></a>
+            <?php
         }
     }
 
     foreach ($projects_to_display as $one_project) {
         if (!$one_project["is_featured"]) {
-        echo("
-            <div class='project'>
-                <h2 class='title_project'><a href='index.php?page=project&project=".$one_project['uuid']."'>".$one_project['title']."</a></h2>
-                <small>".$one_project['nbr_upvote']."/".$one_project['nbr_downvote']." - <a href='index.php?page=profile&user=".$one_project['owner']."'>". get_user_from_uuid($one_project['owner'])."</a> </small>
-            </div>");
-
+            $one_project['pictures'] = explode(",", $one_project['pictures']);
+            ?>
+            <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'>
+            <div class='project_main a_project card'>
+                <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
+                <div class="text_project_main">
+                    <h2 class='title_project'>
+                        <?php echo($one_project['title']) ?>
+                    </h2>
+                    <p><?php echo($one_project["resume"]); ?></p>
+                    <small>
+                        <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                        <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>"> <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
+                    </small>
+                </div>
+            </div>
+            </a>
+            <?php
         }
     }
 
-    require("../html/footer.php");
+}
+
+function default_page($page){
+    // If we need to paginate
+
+    if (!empty($page)  && $page > 0) {
+        $projects_to_display = get_all_projects($page);
+    }else{
+    // Get the 10 last projects
+        $projects_to_display = get_all_projects(null);
+        // echo($_GET["p"]);
+    }
+    // Display the homepage
+    ?> <div class="projects_main_page"> <?php
+    display_homepage($projects_to_display);
+    ?> </div> <?php
 }
 ?>

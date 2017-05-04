@@ -283,4 +283,12 @@ function get_project_data($project){
     }
 }
 
+function upvote_project($user,$project){
+
+}
+
+function downvote_project($user,$project){
+
+}
+
 ?>

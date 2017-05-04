@@ -16,17 +16,20 @@ function display_project($project){
                 $project['pictures'] = explode(",", $project['pictures']);
 
                 ?>
-                <h1 class="title_project"> <?php echo($project['title']) ?> </h1>
-                <small class="resume_project"> <?php echo($project['resume']) ?> </small><br>
-                <span class="votes_project"> <?php echo($project['nbr_upvote']." | ".$project['nbr_downvote']) ?> </span> <span class="dates"> Crée le <?php echo($project['creation_date']) ?> et actif jusqu'au <?php echo($project['limit_date']) ?></span>
                 <div class="images_project">
                     <?php foreach ($project['pictures'] as $picture): ?>
-                        <img width="100" src="<?php echo("uploads/projects/".$picture); ?>" alt="">
+                        <img src="<?php echo("uploads/projects/".$picture); ?>" alt="">
                     <?php endforeach; ?>
                 </div>
+                <div>
+                    <h1 class="title_project"> <?php echo($project['title']) ?> </h1>
+                    <small class="resume_project"> <?php echo($project['resume']) ?> </small><br>
+                    <span class="upvote_project">↑</span> <span class="votes_project"> <?php echo($project['nbr_upvote']." | ".$project['nbr_downvote']) ?> </span><span>↓</span> <span class="dates"> Crée le <?php echo($project['creation_date']) ?> et actif jusqu'au <?php echo($project['limit_date']) ?></span>
 
-                <div class="description_project">
-                    <?php echo($project['description']); ?>
+
+                    <p class="description_project">
+                        <?php echo($project['description']); ?>
+                    </p>
                 </div>
                 <?php
             }
@@ -35,6 +38,8 @@ function display_project($project){
 }
 
 function project(){
+    ?><div class="project_page card"> <?php
     display_project($_GET['project']);
+    ?> </div> <?php
 }
 ?>

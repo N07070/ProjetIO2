@@ -43,7 +43,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     }
 
 
-    if (empty($password_1) && preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
+    if (empty($password_1) || !preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
         $error['number'] = 1;
         $error['message'] = "You need to choose a better password.";
     }

@@ -3,7 +3,16 @@ require_once("default.php");
 require_once("Search.php");
 
 function display_search_results($terms,$options){
-    display_homepage(search_on_database($terms,$options));
+    $results = search_on_database($terms,$options);
+    if(empty($results)){
+        ?>
+        <div class="card">
+            <p>Nothing of value was lost. ( Or found ).</p>
+        </div>
+        <?php
+    } else {
+        display_homepage(search_on_database($terms,$options));
+    }
 };
 
 function display_search_form(){

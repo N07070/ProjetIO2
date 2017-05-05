@@ -2,9 +2,6 @@
 require_once('ConnectionBaseDeDonnee.php');
 function search_on_database($terms,$options){
 
-    print_r($terms);
-    $search_results = [];
-
     if (empty($terms) && empty($options)) {
         return array();
     }
@@ -25,7 +22,7 @@ function search_on_database($terms,$options){
 
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE title LIKE ? AND description LIKE ? AND resume LIKE ? LIMIT 15');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE title LIKE ? OR description LIKE ? OR resume LIKE ? LIMIT 15');
             $req->execute(array("%".$terms."%","%".$terms."%","%".$terms."%"));
             $projects = $req->fetchAll();
             $req->closeCursor();
@@ -33,9 +30,7 @@ function search_on_database($terms,$options){
             die('Error connecting to database: ' . $e->getMessage());
         }
 
-        print_r($projects);
-
-        // return $projects;
+        return $projects;
     }
 }
  ?>

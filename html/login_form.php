@@ -1,7 +1,27 @@
+<div id='login_form' class='card'>
+    <br>
+    <form action="index.php?page=login" method="post">
+        <div class="group">
+            <input type="text" name="username" required><br>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Nom d'utilisateur</label>
+        </div>
 
-<form class="card" action="index.php?page=login" method="post">
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password_1" placeholder="Password" required><br>
-    <input type="hidden" name="options" value="login_user">
-    <input type="submit" value="login">
-</form>
+        <div class="group">
+            <input type="password" name="password_1" required><br>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Nom d'utilisateur</label>
+        </div>
+
+        <input type="hidden" name="options" value="login_user">
+
+        <div class="group">
+            <input type="submit" value="Se Connecter">
+            <span class="highlight"></span>
+            <span class="bar"></span>
+        </div>
+
+    </form>
+</div>

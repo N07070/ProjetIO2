@@ -136,7 +136,7 @@ function display_homepage($projects_to_display){
                         </h2>
                         <p><?php echo($one_project["resume"]); ?></p>
                         <small>
-                            <i class="material-icons">thumb_up</i> <?php echo($one_project['nbr_upvote']);?> <i class="material-icons">thumb_down</i> <?php echo($one_project['nbr_downvote']); ?> -
+                            <span onclick="upvote_project('<?php echo($project['uuid']); ?>')"><i class="material-icons dark_color">thumb_up</i> <?php echo($one_project['nbr_upvote']);?></span> <span onclick="downvote_project('<?php echo($project['uuid']); ?>')"><i class="material-icons light_color">thumb_down</i> <?php echo($one_project['nbr_downvote']); ?> </span>
                             <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
                         </small>
                     </div>
@@ -150,21 +150,36 @@ function display_homepage($projects_to_display){
         if (!$one_project["is_featured"]) {
             $one_project['pictures'] = explode(",", $one_project['pictures']);
             ?>
-            <a href='index.php?page=project&project=<?php echo($one_project["uuid"]) ?>'>
-                <div class='project_main a_project card'>
+
+                <div class='project_main a_project card' id='<?php echo($one_project["uuid"]) ?>'>
+                    <a href='index.php?page=project&project=<?php echo($one_project["uuid"]) ?>'>
                     <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
                     <div class="text_project_main">
                         <h2 class='title_project'>
                             <?php echo($one_project['title']) ?>
                         </h2>
                         <p><?php echo($one_project["resume"]); ?></p>
-                        <small>
-                            <i class="material-icons">thumb_up</i> <?php echo($one_project['nbr_upvote']);?> <i class="material-icons">thumb_down</i> <?php echo($one_project['nbr_downvote']); ?> -
-                            <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
-                        </small>
+                    </a>
+                    <small>
+                        <?php if ($_SESSION['login']) { ?>
+                        <span onclick="upvote_project('<?php echo($project['uuid']); ?>')">
+                        <?php }?>
+                            <i class="material-icons dark_color">thumb_up</i>
+                            <span class="upvotes"><?php echo($one_project['nbr_upvote']);?></span>
+                        </span>
+                        <?php if ($_SESSION['login']) { ?>
+                            <span onclick="downvote_project('<?php echo($project['uuid']); ?>')">
+                        <?php }?>
+                            <i class="material-icons light_color">thumb_down</i>
+                            <span class="downvotes"><?php echo($one_project['nbr_downvote']); ?></span>
+                        </span>
+
+                        <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
+                    </small>
                     </div>
+
                 </div>
-            </a>
+
             <?php
         }
     }

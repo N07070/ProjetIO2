@@ -121,7 +121,7 @@ function display_change_project_settings(){
 function display_change_user_settings(){
     // Change the settings
     if(isset($_POST['change_user_settings']) && $_POST['change_user_settings']) {
-        $result = update_user_profil($_SESSION["uuid"], $_POST['old_password'] , $_POST['password_1'] , $_POST['password_2'] , $_POST['email'], $_FILES, $_POST['biography']){
+        $result = update_user_profil($_SESSION["uuid"], $_POST['old_password'] , $_POST['password_1'] , $_POST['password_2'] , $_POST['email'], $_FILES, $_POST['biography']);
         if ($result[0]) {
             display_message("Ton compte à été mit à jour.");
         } else {

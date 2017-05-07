@@ -68,6 +68,21 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             require("../html/footer.php");
             break;
     }
+} elseif (isset($_GET["action"]) && !empty($_GET["action"])) {
+    switch ($_GET['action']) {
+        case 'upvote_project':
+            require_once('../php/Project.php');
+            if (isset($_GET['downvote_project']) && !empty($_GET['downvote_project'])) {
+                echo(downvote_project($_GET['downvote_project']));
+            }elseif (isset($_GET['upvote_project']) && !empty($_GET['upvote_project'])) {
+                echo(upvote_project($_GET['upvote_project']));
+            }
+            break;
+
+        default:
+            # code...
+            break;
+    }
 } else {
     // Connect to the database to get the projects
     require_once("../php/default.php");

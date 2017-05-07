@@ -34,7 +34,7 @@ function display_project($project){
                     <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_down</i><br><?php echo($project['nbr_downvote']); ?></button>
                     <button id="join_project" class="fab light_background"><i class="material-icons ">group_add</i></button>
                     <?php } else {
-                        display_message("Connecte toi pour participer à ce projet ! ;-)"); 
+                        display_message("Connecte toi pour participer à ce projet ! ;-)");
                     } ?>
 
                     <p class="description_project">
@@ -64,7 +64,7 @@ function display_project($project){
 
 function project(){
     ?><div class="project_page card"> <?php
-    display_project($_GET['project']);
+        display_project($_GET['project']);
     ?> </div> <?php
 }
 ?>

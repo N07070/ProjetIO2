@@ -91,7 +91,9 @@ nav a {
 
 .a_project .material-icons {
     font-size: 1em;
+    cursor: pointer;
 }
+
 
 .featured_project_main > .title_project {;
     font-style: underline;

@@ -286,12 +286,61 @@ function get_project_data($project){
     }
 }
 
-function upvote_project($user,$project){
+function upvote_project($project){
+    // TODO : Add limitation to the number of upvotes a user can give to a project
+    if(project_exists($project)){
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('SELECT nbr_upvote FROM projets WHERE uuid = ?');
+            $req->execute(array($project));
+            $upvotes_of_project = $req->fetch();
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
 
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('UPDATE projets SET nbr_upvote = ? WHERE uuid = ?');
+            $req->execute(array($upvotes_of_project[0] + 1,$project));
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
+
+        return $upvotes_of_project[0] + 1;
+    } else {
+        return false;
+    }
 }
 
-function downvote_project($user,$project){
+function downvote_project($project){
+    // TODO : Add limitation to the number of upvotes a user can give to a project
+    if(project_exists($project)){
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('SELECT nbr_downvote FROM projets WHERE uuid = ?');
+            $req->execute(array($project));
+            $downvotes_of_project = $req->fetch();
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
 
+        try {
+            $database_connexion = connect_to_database();
+            $req = $database_connexion->prepare('UPDATE projets SET nbr_downvote = ? WHERE uuid = ?');
+            $req->execute(array($downvotes_of_project[0] + 1,$project));
+            $req->closeCursor();
+        } catch (Exception $e) {
+            die('Error connecting to database: ' . $e->getMessage());
+        }
+
+        return $downvotes_of_project[0] + 1;
+
+    } else {
+        return false;
+    }
 }
 
 ?>

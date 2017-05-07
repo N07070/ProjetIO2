@@ -94,7 +94,9 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
         die('Error connecting to database: ' . $e->getMessage());
     }
 
-    return true;
+    $results = [1,$v4uuid,$title];
+
+    return $results;
 
 }
 
@@ -146,6 +148,7 @@ function user_participating_to_project($uuid,$project){
 }
 
 function delete_project($project){
+    // TODO: Delete the pictures too
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('DELETE FROM projets WHERE uuid = ?');

@@ -42,7 +42,8 @@ function login_signup_user($option,$username, $password_1, $password_2, $email, 
                 display_message("Signup successfull ! Welcome !");
                 display_login_form();
             }else {
-                display_error($result['message']);
+                display_error($result);
+                display_signup_form();
             }
         // Logout and destroy the sessions
         } else {

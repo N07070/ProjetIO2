@@ -1,4 +1,5 @@
 <div id='login_form' class='card'>
+    <h2>Se connecter</h2>
     <br>
     <form action="index.php?page=login" method="post">
         <div class="group">

@@ -3,7 +3,7 @@ require_once("Project.php");
 require_once("Utilisateur.php");
 
 function display_project($project){
-    if(!empty($project) && UUID::is_valid($project)){
+    if(!empty($project) && UUID::is_valid($project) && project_exists($project)){
         if(get_project_data($project) !== false){
             $data = get_project_data($project);
 
@@ -27,12 +27,15 @@ function display_project($project){
                 </div>
 
                 <div>
-                    <h1 class="title_project"> <?php echo($project['title']) ?> </h1>
+                    <h1 class="title_project"> <?php echo($project['title']) ?> <?php if ($project['is_featured']): ?><i class="material-icons ">star_border</i><?php endif; ?></h1>
                     <small class="resume_project"> <?php echo($project['resume']) ?> </small><br>
+                    <?php if ($_SESSION['login']) { ?>
                     <button id="upvote_project" class="fab light_background"><i class="material-icons ">thumb_up</i><br><?php echo($project['nbr_upvote']);?></button>
                     <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_down</i><br><?php echo($project['nbr_downvote']); ?></button>
                     <button id="join_project" class="fab light_background"><i class="material-icons ">group_add</i></button>
-
+                    <?php } else {
+                        display_message("Connecte toi pour participer à ce projet ! ;-)"); 
+                    } ?>
 
                     <p class="description_project">
                         <?php echo($project['description']); ?>
@@ -54,6 +57,8 @@ function display_project($project){
                 <?php
             }
         }
+    } else {
+        display_error("Ce projet n'existe pas.");
     }
 }
 

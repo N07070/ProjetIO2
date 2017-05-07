@@ -126,21 +126,22 @@ function display_homepage($projects_to_display){
     if(!empty($featured_projects)){
         foreach ($featured_projects as $one_project) {
             $one_project['pictures'] = explode(",", $one_project['pictures']);
-            print_r($one_project);
             ?>
-            <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'><div class='featured_project_main a_project card'>
+            <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'>
+                <div class='featured_project_main a_project card'>
                 <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
-                <div class="text_project_main">
-                    <h2 class='title_project'>
-                    <?php echo($one_project['title']) ?>
-                    </h2>
-                    <p><?php echo($one_project["resume"]); ?></p>
-                    <small>
-                        <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
-                        <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>"> <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
-                    </small>
+                    <div class="text_project_main">
+                        <h2 class='title_project'>
+                        <?php echo($one_project['title']) ?> <i class="material-icons">star_outline</i>
+                        </h2>
+                        <p><?php echo($one_project["resume"]); ?></p>
+                        <small>
+                            <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                            <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
+                        </small>
+                    </div>
                 </div>
-            </div></a>
+            </a>
             <?php
         }
     }
@@ -149,20 +150,20 @@ function display_homepage($projects_to_display){
         if (!$one_project["is_featured"]) {
             $one_project['pictures'] = explode(",", $one_project['pictures']);
             ?>
-            <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'>
-            <div class='project_main a_project card'>
-                <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
-                <div class="text_project_main">
-                    <h2 class='title_project'>
-                        <?php echo($one_project['title']) ?>
-                    </h2>
-                    <p><?php echo($one_project["resume"]); ?></p>
-                    <small>
-                        <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
-                        <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>"> <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
-                    </small>
+            <a href='index.php?page=project&project=<?php echo($one_project["uuid"]) ?>'>
+                <div class='project_main a_project card'>
+                    <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
+                    <div class="text_project_main">
+                        <h2 class='title_project'>
+                            <?php echo($one_project['title']) ?>
+                        </h2>
+                        <p><?php echo($one_project["resume"]); ?></p>
+                        <small>
+                            <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                            <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
+                        </small>
+                    </div>
                 </div>
-            </div>
             </a>
             <?php
         }

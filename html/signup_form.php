@@ -1,6 +1,6 @@
 
 <div id='signup_form' class='card'>
-
+    <h2>S'inscrire</h2>
     <form action="index.php?page=login" method="post" enctype="multipart/form-data">
         <div class="group">
             <input type="text" name="username" required><br>
@@ -10,7 +10,8 @@
         </div>
 
         <br>
-            <p> Ton mot de passe doit : faire 8 caractères de long, contenir une minuscule et une majuscule, un chiffre et un caractère non-alphabétique.</p>
+            <small> Ton mot de passe doit : faire 8 caractères de long, contenir une minuscule et une majuscule, un chiffre et un caractère non-alphabétique.</small>
+        <br>
         <br>
 
         <div class="group">
@@ -39,7 +40,7 @@
         <input type="file" name="profile_picture" placeholder="Profile Picture" required><br>
 
         <div class="group">
-            <textarea name="biography" rows="8" cols="40" required>Parle de toi, raconte ta vie.</textarea><br>
+            <textarea name="biography" rows="8" cols="40" required>Ta biographie : parle de toi, raconte ta vie.</textarea><br>
             <span class="highlight"></span>
             <span class="bar"></span>
         </div>

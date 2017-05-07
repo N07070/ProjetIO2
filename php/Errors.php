@@ -24,20 +24,18 @@ function throw_error($error_code){
 
 
 function display_error($error_message){
-    echo("
-    <div class='error'>
-        <pre>
-        ".$error_message."
-        </pre>
-    </div>");
+    ?>
+    <div class='card error'>
+            <i class="material-icons">help_outline</i><span><?php echo($error_message) ?></span>
+    </div>
+    <?php
 }
 
 function display_message($message){
-    echo("
-    <div class='message'>
-        <pre>
-        ".$message."
-        </pre>
-    </div>");
+    ?>
+    <div class='card message light_background'>
+            <i class="material-icons">help_outline</i><span><?php echo($message) ?></span>
+    </div>
+    <?php
 }
 ?>

@@ -136,7 +136,7 @@ function display_homepage($projects_to_display){
                         </h2>
                         <p><?php echo($one_project["resume"]); ?></p>
                         <small>
-                            <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                            <i class="material-icons">thumb_up</i> <?php echo($one_project['nbr_upvote']);?> <i class="material-icons">thumb_down</i> <?php echo($one_project['nbr_downvote']); ?> -
                             <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
                         </small>
                     </div>
@@ -159,7 +159,7 @@ function display_homepage($projects_to_display){
                         </h2>
                         <p><?php echo($one_project["resume"]); ?></p>
                         <small>
-                            <?php echo("↑".$one_project['nbr_upvote']."|".$one_project['nbr_downvote']."↓"); ?> -
+                            <i class="material-icons">thumb_up</i> <?php echo($one_project['nbr_upvote']);?> <i class="material-icons">thumb_down</i> <?php echo($one_project['nbr_downvote']); ?> -
                             <a href="index.php?page=profile&user=<?php echo($one_project['owner']); ?>">Proposé par <?php echo(get_user_from_uuid($one_project['owner'])); ?></a>
                         </small>
                     </div>

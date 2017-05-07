@@ -89,6 +89,10 @@ nav a {
     padding-left: 100px;
 }
 
+.a_project .material-icons {
+    font-size: 1em;
+}
+
 .featured_project_main > .title_project {;
     font-style: underline;
 }

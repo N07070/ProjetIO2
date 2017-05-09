@@ -72,15 +72,29 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
     switch ($_GET['action']) {
         case 'upvote_project':
             require_once('../php/Project.php');
-            if (isset($_GET['downvote_project']) && !empty($_GET['downvote_project'])) {
-                echo(downvote_project($_GET['downvote_project']));
-            }elseif (isset($_GET['upvote_project']) && !empty($_GET['upvote_project'])) {
+            if (isset($_GET['upvote_project']) && !empty($_GET['upvote_project'])) {
+                error_log("User ".get_user_from_uuid($_SESSION['uuid'])." upvoted project " . $_GET['upvote_project'] );
                 echo(upvote_project($_GET['upvote_project']));
             }
             break;
-
+        case 'downvote_project' :
+            require_once('../php/Project.php');
+            if (isset($_GET['downvote_project']) && !empty($_GET['downvote_project'])) {
+                error_log("User ".get_user_from_uuid($_SESSION['uuid'])." downvoted project " . $_GET['downvote_project'] );
+                echo(downvote_project($_GET['downvote_project']));
+            }
+            break;
+        case 'join_project':
+            require_once('../php/Project.php');
+            if (isset($_GET['project']) && !empty($_GET['project'])  && $_SESSION['login'] && !empty($_SESSION['uuid'])) {
+                add_user_to_project($_SESSION['uuid'],$_GET['project']);
+            //     // if(add_user_to_project($_SESSION['uuid'],$_GET['project'])){
+            //     //     error_log("User ".get_user_from_uuid($_SESSION['uuid'])." added to project " . $_GET['project'] );
+            //     // };
+            }
+            break;
         default:
-            # code...
+            echo "dzdez";
             break;
     }
 } else {

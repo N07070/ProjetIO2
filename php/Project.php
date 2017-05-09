@@ -102,30 +102,30 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
 
 function add_user_to_project($uuid,$project){
     if(!user_participating_to_project($uuid, $project)){
-        // Get the users participating before
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT participants FROM projets WHERE uuid = ?');
+            $req = $database_connexion->prepare("SELECT participants FROM projets WHERE uuid = ?");
             $req->execute(array($project));
-                $participants = $req->fetch();
+            $participants = $req->fetch();
             $req->closeCursor();
         } catch (Exception $e) {
-            die('Error connecting to database: ' . $e->getMessage());
+            die("Error connecting to the database " . $e->getMessage());
         }
 
-        // Concatenate and add to participants
+        print_r($participants[0] . $uuid . ",");
 
-        $participants .= $uuid . ",";
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('UPDATE projets SET participants = ? WHERE uuid = ?');
-            $req->execute(array($participants, $project));
+            $req = $database_connexion->prepare("UPDATE projets SET participants = ? WHERE uuid = ?");
+            $req->execute(array($participants[0] . $uuid . ",", $project));
             $req->closeCursor();
         } catch (Exception $e) {
-            die('Error connecting to database: ' . $e->getMessage());
+            die("Error connecting to the database " . $e->getMessage());
         }
+
         return true;
     }
+
     return false;
 }
 
@@ -139,6 +139,8 @@ function user_participating_to_project($uuid,$project){
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
     }
+
+    $participants = $participants[0];
 
     if (strpos($participants, $uuid) !== false) {
         return true;

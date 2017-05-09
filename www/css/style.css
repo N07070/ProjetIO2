@@ -450,11 +450,12 @@ input:focus ~ .highlight {
 
 /* --- mobile -- */
 
-@media  screen and (max-width: 720px) {
+@media  screen and (max-width: 1000px) {
     html {
         padding-left: 0px;
         padding-right: 0px;
         width: 100%;
+        font-size: 3em;
     }
 }
 

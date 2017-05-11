@@ -86,9 +86,9 @@ function sort_projects_hot($a, $b){
     $ratio_b = log($z_b) + ( $y_b * $time_b) / 4500;
 
     if($ratio_a  > $ratio_b ){
-        return 1;
-    }else{
         return -1;
+    }else{
+        return 1;
     }
 }
 
@@ -116,6 +116,10 @@ function sort_projects_controversial($projects) {
 function display_homepage($projects_to_display){
     // Check if some of the projects are featured
     $featured_projects = array();
+
+    if(empty($projects_to_display)){
+        require_once("../html/first_run.php");
+    }
 
     foreach ($projects_to_display as $project) {
         if ($project["is_featured"]) {

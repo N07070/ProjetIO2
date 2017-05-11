@@ -14,6 +14,7 @@ a {
     text-decoration: none;
 }
 
+
 /* --- navigation --- */
 
 nav {
@@ -239,11 +240,15 @@ nav a {
 
 /* --- login page --- */
 
-/* form starting stylings ------------------------------- */
+.login_form , a {
+    color: #616161;
+}
+
 .group 			  {
   position:relative;
   margin-bottom:45px;
 }
+
 input 				{
   font-size:18px;
   padding:10px 10px 10px 5px;
@@ -252,10 +257,12 @@ input 				{
   border:none;
   border-bottom:1px solid #757575;
 }
-input:focus 		{ outline:none; }
 
-/* LABEL ======================================= */
-label 				 {
+input:focus {
+    outline:none;
+}
+
+label {
   color:#999;
   font-size:18px;
   font-weight:normal;
@@ -269,7 +276,7 @@ label 				 {
 }
 
 /* active state */
-input:focus ~ label, input:valid ~ label 		{
+input:focus ~ label, input:valid ~ label {
   top:-20px;
   font-size:14px;
   color:#5264AE;
@@ -277,6 +284,7 @@ input:focus ~ label, input:valid ~ label 		{
 
 /* BOTTOM BARS ================================= */
 .bar 	{ position:relative; display:block; width:300px; }
+
 .bar:before, .bar:after 	{
   content:'';
   height:2px;
@@ -291,6 +299,7 @@ input:focus ~ label, input:valid ~ label 		{
 .bar:before {
   left:50%;
 }
+
 .bar:after {
   right:50%;
 }
@@ -344,10 +353,6 @@ input:focus ~ .highlight {
 
 .error .material-icons {
     padding-right: 1em;
-}
-
-.error span {
-
 }
 
 .message {
@@ -446,6 +451,7 @@ input:focus ~ .highlight {
 
 #footer_card {
     margin-top: 1em;
+    text-align: center;
 }
 
 /* --- mobile -- */

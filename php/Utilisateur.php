@@ -131,8 +131,8 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
             // $name_of_file,
             // $biography,
         try {
-            $req = $database_connexion->prepare('INSERT INTO utilisateurs(uuid, username, email, password, profile_picture, biography, is_admin, is_premium) VALUES(?,?,?,?,?,?,?,?)');
-            $req->execute(array($v4uuid, $username, $email, $hashed_password, $name_of_file, $biography, 0, 0));
+            $req = $database_connexion->prepare('INSERT INTO utilisateurs(uuid, username, email, password, profile_picture, biography, is_admin, is_premium, upvoted_projects, downvoted_projects) VALUES(?,?,?,?,?,?,?,?,?,?)');
+            $req->execute(array($v4uuid, $username, $email, $hashed_password, $name_of_file, $biography, 0, 0,"",""));
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
@@ -414,4 +414,5 @@ function user_exits($uuid){
         return true;
     }
 }
+
 ?>

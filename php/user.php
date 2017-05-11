@@ -68,7 +68,7 @@ function display_create_new_project(){
         $result = create_new_project($owner, $title, $tags, $pictures, $resume, $description);
         if($result[0] == true){
             ?>
-            <h3>Ton nouveau projet viens d'être crée !</h3>
+            <h3>Ton nouveau projet viens d'être créée !</h3>
             <p>Voici quelques petits conseils pour qu'il prenne forme :
                 <ul>
                     <li>Déjà, plus des gens le voit, plus il sera populaire. N'hésite pas à le partager sur les réseaux sociaux.</li>

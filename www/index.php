@@ -68,20 +68,20 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             require("../html/footer.php");
             break;
     }
-} elseif (isset($_GET["action"]) && !empty($_GET["action"])) {
+} elseif (isset($_GET["action"]) && !empty($_GET["action"]) && $_SESSION['login']) {
     switch ($_GET['action']) {
         case 'upvote_project':
             require_once('../php/Project.php');
             if (isset($_GET['upvote_project']) && !empty($_GET['upvote_project'])) {
                 error_log("User ".get_user_from_uuid($_SESSION['uuid'])." upvoted project " . $_GET['upvote_project'] );
-                echo(upvote_project($_GET['upvote_project']));
+                echo(upvote_project($_GET['upvote_project'], $_SESSION['uuid']));
             }
             break;
         case 'downvote_project' :
             require_once('../php/Project.php');
             if (isset($_GET['downvote_project']) && !empty($_GET['downvote_project'])) {
                 error_log("User ".get_user_from_uuid($_SESSION['uuid'])." downvoted project " . $_GET['downvote_project'] );
-                echo(downvote_project($_GET['downvote_project']));
+                echo(downvote_project($_GET['downvote_project'], $_SESSION['uuid']));
             }
             break;
         case 'join_project':

@@ -88,7 +88,31 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('INSERT INTO projets(uuid, owner, nbr_upvote, nbr_downvote, participants, creation_date, is_featured, title, tags, status, limit_date, pictures, resume, description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        $req->execute(array($v4uuid, $owner, 1, 0 , $owner."," , date("Y-m-d H:i:s"), 0 , $title, $tags, 1 , $date_in_a_month , $pictures_path, $resume, $description));
+        $req->execute(array($v4uuid, $owner, 0, 0 , $owner."," , date("Y-m-d H:i:s"), 0 , $title, $tags, 1 , $date_in_a_month , $pictures_path, $resume, $description, ));
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+    // Update the upvoted projects so you cannot upvote your own project ( alreay done. )
+
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT upvoted_projects FROM utilisateurs WHERE uuid = ?');
+        $req->execute(array($owner));
+        $projects_upvoted = $req->fetch();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+    print_r($projects_upvoted);
+
+    $projects_upvoted[0] .= $v4uuid . ",";
+
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('UPDATE utilisateurs SET upvoted_projects = ? WHERE uuid = ?');
+        $req->execute(array($projects_upvoted[0] , $owner));
         $req->closeCursor();
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
@@ -288,60 +312,133 @@ function get_project_data($project){
     }
 }
 
-function upvote_project($project){
+function upvote_project($project, $user){
     // TODO : Add limitation to the number of upvotes a user can give to a project
-    if(project_exists($project)){
+    if(project_exists($project) && UUID::is_valid($user) && user_exits($user)){
+
+        $a = true;
+
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT nbr_upvote FROM projets WHERE uuid = ?');
-            $req->execute(array($project));
-            $upvotes_of_project = $req->fetch();
+            $req = $database_connexion->prepare('SELECT upvoted_projects FROM utilisateurs WHERE uuid = ?');
+            $req->execute(array($user));
+            $projects_upvoted = $req->fetch();
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
         }
 
-        try {
-            $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('UPDATE projets SET nbr_upvote = ? WHERE uuid = ?');
-            $req->execute(array($upvotes_of_project[0] + 1,$project));
-            $req->closeCursor();
-        } catch (Exception $e) {
-            die('Error connecting to database: ' . $e->getMessage());
+        $projects_upvoted = explode("," , $projects_upvoted[0]);
+
+        foreach ($projects_upvoted as $project_upvoted) {
+            if($project_upvoted == $project ){
+                $a = false;
+            }
         }
 
-        return $upvotes_of_project[0] + 1;
+        if($a){
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('SELECT nbr_upvote FROM projets WHERE uuid = ?');
+                $req->execute(array($project));
+                $upvotes_of_project = $req->fetch();
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
+
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('UPDATE projets SET nbr_upvote = ? WHERE uuid = ?');
+                $req->execute(array($upvotes_of_project[0] + 1,$project));
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
+
+            $projects_upvoted = implode("," , $projects_upvoted);
+            $projects_upvoted .= $project . ",";
+
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('UPDATE utilisateurs SET upvoted_projects = ? WHERE uuid = ?');
+                $req->execute(array($projects_upvoted , $user));
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
+
+            return $upvotes_of_project[0] + 1;
+        } else {
+            return false;
+        }
     } else {
         return false;
     }
 }
 
-function downvote_project($project){
+function downvote_project($project, $user){
     // TODO : Add limitation to the number of upvotes a user can give to a project
-    if(project_exists($project)){
+    if(project_exists($project) && UUID::is_valid($user) && user_exits($user)){
+
+        $a = true;
+
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT nbr_downvote FROM projets WHERE uuid = ?');
-            $req->execute(array($project));
-            $downvotes_of_project = $req->fetch();
+            $req = $database_connexion->prepare('SELECT downvoted_projects FROM utilisateurs WHERE uuid = ?');
+            $req->execute(array($user));
+            $projects_downvoted = $req->fetch();
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
         }
 
-        try {
-            $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('UPDATE projets SET nbr_downvote = ? WHERE uuid = ?');
-            $req->execute(array($downvotes_of_project[0] + 1,$project));
-            $req->closeCursor();
-        } catch (Exception $e) {
-            die('Error connecting to database: ' . $e->getMessage());
+        $projects_downvoted = explode("," , $projects_downvoted[0]);
+
+        foreach ($projects_downvoted as $project_downvoted) {
+            if($project_downvoted == $project ){
+                $a = false;
+            }
         }
 
-        return $downvotes_of_project[0] + 1;
+        if($a){
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('SELECT nbr_downvote FROM projets WHERE uuid = ?');
+                $req->execute(array($project));
+                $downvotes_of_project = $req->fetch();
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
 
+            $projects_downvoted = implode("," , $projects_downvoted);
+            $projects_downvoted .= $project . ",";
+
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('UPDATE projets SET nbr_downvote = ? WHERE uuid = ?');
+                $req->execute(array($downvotes_of_project[0] + 1,$project));
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
+
+            try {
+                $database_connexion = connect_to_database();
+                $req = $database_connexion->prepare('UPDATE utilisateurs SET downvoted_projects = ? WHERE uuid = ?');
+                $req->execute(array($projects_downvoted , $user));
+                $req->closeCursor();
+            } catch (Exception $e) {
+                die('Error connecting to database: ' . $e->getMessage());
+            }
+
+            return $downvotes_of_project[0] + 1;
+        }else {
+            return "false";
+        }
     } else {
-        return false;
+        return "false";
     }
 }
 

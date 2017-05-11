@@ -13,7 +13,7 @@
             <input type="password" name="password_1" required><br>
             <span class="highlight"></span>
             <span class="bar"></span>
-            <label>Nom d'utilisateur</label>
+            <label>Mot de passe</label>
         </div>
 
         <input type="hidden" name="options" value="login_user">
@@ -23,6 +23,7 @@
             <span class="highlight"></span>
             <span class="bar"></span>
         </div>
-
     </form>
+
+    <a href="index.php?page=login&forgot_password">Mot de passe oublié ?</a>
 </div>

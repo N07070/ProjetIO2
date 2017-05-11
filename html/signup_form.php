@@ -49,7 +49,7 @@
         <input type="hidden" name="options" value="signup_user" required>
 
         <div class="group">
-            <input type="submit" value="signup">
+            <input type="submit" value="S'inscrire">
             <span class="highlight"></span>
             <span class="bar"></span>
         </div>

@@ -43,7 +43,13 @@ function display_project($project){
                         </span>
 
                         <span onclick="join_project('<?php echo($project['uuid']); ?>')">
-                            <button id="join_project" class="fab light_background"><i class="material-icons ">group_add</i></button>
+                            <button id="join_project" class="fab light_background">
+                            <?php if(user_participating_to_project($_SESSION['uuid'], $project['uuid'])) {
+                                ?> <i class="material-icons ">check</i> <?php
+                            } else {
+                                ?> <i class="material-icons ">group_add</i> <?php
+                            } ?>
+                            </button>
                         </span>
                         <?php } else {
                             display_message("Connecte toi pour participer à ce projet ! ;-)");

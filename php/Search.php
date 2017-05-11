@@ -22,8 +22,8 @@ function search_on_database($terms,$options){
 
         try {
             $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE title LIKE ? OR description LIKE ? OR resume LIKE ? LIMIT 15');
-            $req->execute(array("%".$terms."%","%".$terms."%","%".$terms."%"));
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE title LIKE ? OR description LIKE ? OR resume LIKE ? OR tags LIKE ? LIMIT 15');
+            $req->execute(array("%".$terms."%","%".$terms."%","%".$terms."%","%".$terms."%"));
             $projects = $req->fetchAll();
             $req->closeCursor();
         } catch (Exception $e) {

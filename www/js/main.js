@@ -1,7 +1,8 @@
 function upvote_project(project_id , project_uuid){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200 && this.responseText.toString() != "false") {
+        console.log(this.responseText.toString());
+         if (this.readyState == 4 && this.status == 200 && this.responseText.toString() != "false" && typeof(this.responseText)  != "number") {
              document.getElementById("upvotes_" + project_id).innerText = this.responseText.toString();
          }
     };

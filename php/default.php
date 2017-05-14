@@ -8,7 +8,7 @@ function get_all_projects($start){
     if(isset($start) && $start > 0 && !empty($start)){
         // Get the $start
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > CURRENT_TIME LIMIT ? ,200 ');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() LIMIT ? ,200 ');
             $req->execute(array($start * 10));
             $projects = $req->fetchAll();
             $req->closeCursor();
@@ -17,12 +17,11 @@ function get_all_projects($start){
         }
     }else {
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > CURRENT_TIME LIMIT 200');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() LIMIT 200');
             $req->execute();
             $projects = $req->fetchAll();
             $req->closeCursor();
         } catch (Exception $e) {
-            throw_error(500);
             die('Error getting the projects ' . $e->getMessage());
         }
     }
@@ -41,7 +40,6 @@ function get_all_projects($start){
 // Takes two projects in the form of an array,
 // and sorts them for uasort();
 function sort_projects_hot($a, $b){
-    // TODO : put up the real ratio
 
     $time_reference = 1493197190;
 

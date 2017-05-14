@@ -88,7 +88,7 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
     try {
         $database_connexion = connect_to_database();
         $req = $database_connexion->prepare('INSERT INTO projets(uuid, owner, nbr_upvote, nbr_downvote, participants, creation_date, is_featured, title, tags, status, limit_date, pictures, resume, description) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        $req->execute(array($v4uuid, $owner, 0, 0 , $owner."," , date("Y-m-d H:i:s"), 0 , $title, $tags, 1 , $date_in_a_month , $pictures_path, $resume, $description, ));
+        $req->execute(array($v4uuid, $owner, 1, 0 , $owner."," , date("Y-m-d H:i:s"), 0 , $title, $tags, 1 , $date_in_a_month , $pictures_path, $resume, $description, ));
         $req->closeCursor();
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
@@ -105,7 +105,7 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
     } catch (Exception $e) {
         die('Error connecting to database: ' . $e->getMessage());
     }
-    print_r($projects_upvoted);
+    // print_r($projects_upvoted);
 
     $projects_upvoted[0] .= $v4uuid . ",";
 
@@ -136,7 +136,7 @@ function add_user_to_project($uuid,$project){
             die("Error connecting to the database " . $e->getMessage());
         }
 
-        print_r($participants[0] . $uuid . ",");
+        // print_r($participants[0] . $uuid . ",");
 
         try {
             $database_connexion = connect_to_database();
@@ -370,10 +370,10 @@ function upvote_project($project, $user){
 
             return $upvotes_of_project[0] + 1;
         } else {
-            return false;
+            return "false";
         }
     } else {
-        return false;
+        return "false";
     }
 }
 

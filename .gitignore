@@ -1,1 +1,9 @@
-www/uploads/*
+www/uploads/*.jpg
+www/uploads/*.jpeg
+www/uploads/*.png
+www/uploads/*.gif
+
+www/uploads/projects/*.jpg
+www/uploads/projects/*.jpeg
+www/uploads/projects/*.png
+www/uploads/projects/*.gif

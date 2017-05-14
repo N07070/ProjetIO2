@@ -1,163 +1,66 @@
-# Project
-
-*Projet d'Internet et Outil du deuxième semestre de la fac Paris 7*
+# FLAP
 
 ## Présentation
 
-**Abstract**
+FLAP, acronyme de __Fait Le Avec des Potes__ est née du besoin pour nous d'avoir
+une plateforme où l'on pourrait se retrouver avec des créateurs pour porter des projets
+de manière collaborative.
 
-Tanlax est un site web qui permet aux étudiant.es de la fac de Paris Diderot de déposer et chercher des projets qu'ils cherchent à réaliser avec d'autres étudiant.es. Les projets sont triés selon leur popularité et peuvent être haut-voté ou bas-voté
+Le but du site est donc de permettre à n'importe qui de rejoindre la plateforme et
+de pouvoir y proposer un projet qu'il ou elle souhaiterai construire avec d'autres personnes.
+Par exemple, une envie de créer un graffiti original, une cabane ou un projet scientifique.
 
-L'expérience utilisateur typique commence quand on arrive sur la page d'acceuil ou des projets sont mit en avant en fonction de leur popularité ou si ils viennent d'être posté.
+De plus, même sans avoir de projet, il suffit de se balader avec une peu de
+curiosité sur le site pour rapidement trouver un projet dans lequel on se sent de
+s'impliquer.
 
-Le site se compose des pages suivantes :
-- Un profil utilisateur
-    - Page de login + signup
-    - Page de préférence du compte
-        - Photo de profil
-        - Infor perso
-        - changement de mot de passe
-        - thème
-        - Accessibilité
-        - Désincription / suppression de compte
-- Page d'acceuil
-    - Page spécifique à un message
-        - Commentaires
-        - Vote
-- Page de recherche / tags
-- Page de post de message
-- Page de messagerie entre utilisateurs
-- Page d'erreurs
+Cela est possible grâce à l'interaction riche entre les utilisateurs. Pour chaque
+projet, ils peuvent exprimer leur avis et soutenir un projet en l'aimant, ou au
+contraire trouver qu'il peut être néfaste, et donc le désapprouver.
 
-### Objets nécéssaires
+Un projet qui est particulièrement intéressant peut être rejoins. Pour cela, rien
+de plus simple que cliquer sur un bouton.
 
-- User,
-    - Admin,
-- Projet,
-    - Projet mit en avant
-- Message,
+Les projets sont triés en fonction de l'intérêt qui leur est porté, et en fonction
+de leur anciennetée, ainsi, tout les projets peuvent avoir une chance égale.
 
-### Descrition des fonctions
-
-- Projet:
-    - Une/plusieurs photos,
-    - Titre,
-    - Description,
-        - résumé du projet,
-        - explications concrète.
-    - Tags,
-    - Status
-        - Actif, Terminé avec succès ou fail.
-    - Date limite,
-    - Date de création
-    - Commentaires
-
-- Utilisateur,
-    - Photo de profil,
-    - Bio,
-    - Nom,
-    - Informations de contact,
-    - Messagerie,
-        - Admin
-            - Droits
+Pour permettre à certaines perles de sortir du lot, des projets peuvent aussi être
+mit en avant.
 
 
-### Structure de la base de données
+## Réalisation
 
-- projects
-    - uuid
-    - nbr_upvote
-    - nbr_downvote
-    - owner
-    - participants
-    - creation_date
-    - is_featured
-    - title
-    - tags
-    - status
-    - limit_date
-    - pictures
-    - resume
-    - description
+La réalisation n'a pas été très compliqué une fois l'architecture bien mise en place,
+sur un modèle MVC (respectée tant bien que mal.)
+Ayant déjà pas mal d'expérience dans la conception de site web, je connaissait déjà
+certaines techinques et les bases.
+La gestion des images à été pour moi le plus difficile. Ça, et le fait d'avoir à faire
+un site web full-stack seul.
 
-- users
-    - uuid
-    - username
-    - email
-    - password
-    - profile_picture
-    - biography
-    - is_admin
-    - date_creation
-    - is_premium
+## Technologies
 
-- comments
-    - UUID
-    - project
-    - comments
-    - user
-    - date
+Le choix des technologies à été simple, vu qu'imposé. Toutefois, plusieurs choix
+ont été important. Tout d'abord, le fait de séparer la logique pure et l'accès
+aux bases de données dans un fichier avec une majuscule, tel que Utilisateurs.php,
+puis de s'occuper de l'affichage en tant que tel dans user.php. Il à aussi été décidé
+de faire un routeur principal dans index.php, puis de tout gérer de là, au lieu
+d'avoir le nom des fichiers apparaître dans l'URL. Cela permet de changer cette URL
+à souhait pour des besoins de SEO ou d'organisation. L'ajout de sécurité est également
+important.
 
-- Messages
-    - user_from
-    - user_to
-    - date
-    - text
+Un peu de javascript à été ajouté pour pouvoir voter sur un projet sans quitter
+la page, mais cela reste sommaire.
 
-### Algorithme de classement pour la page d'index
+Le design à été décidé comme étant sommaire, s'approchant des normes de Material Design
+utilisé par Google pour Android et sur le web.
 
-- Il existe 3 algo :
-    - Trending : Ce qui est apprécié
-    - New : Ce qui est nouveau
-    - Controversial : Ce qui est sujet à controverse
-
-*Ensuite, l'utilisateur pourra classer dans la recherche en fonction de ce qu'iel veut*
-
-On utilise le même algo que Reddit : https://medium.com/hacking-and-gonzo/how-reddit-ranking-algorithms-work-ef111e33d0d9
-https://gist.github.com/slogsdon/3726272
-
-```
-# Rewritten code from /r2/r2/lib/db/_sorts.pyx
-
-from datetime import datetime, timedelta
-from math import log
-
-epoch = datetime(1970, 1, 1)
-
-def epoch_seconds(date):
-    td = date - epoch
-    return td.days * 86400 + td.seconds + (float(td.microseconds) / 1000000)
-
-def score(ups, downs):
-    return ups - downs
-
-def hot(ups, downs, date):
-    s = score(ups, downs)
-    order = log(max(abs(s), 1), 10)
-    sign = 1 if s > 0 else -1 if s < 0 else 0
-    seconds = epoch_seconds(date) - 1134028003
-    return round(sign * order + seconds / 45000, 7)
-```
-
-- Variables
-    - Ratio : 0.6 ( 0 - 1 )
-        - Nombre d'upvote / Nombre de downvote
-    - Date de publication de projet : 0.1 ( 1 - 0 )
-        - décrémente de façon logarithmique
-        - Par rapport au moment où l'utilisateur consulte la page.
-        - On ne montre jamais un projet vieux de plus de 3 mois
-    - Ratio d'intérêt : 0.3
-        - Nombre de participant.es intéressé.es / nombres de votes  ( 0 - 1 )
-
-### Architecture
+Une classe externe servant à génerer des UUID à également été utilisée. Elle permet
+d'avoir un identifiant unique pour chaque projet, utilisateur, ou tout autre donnée,
+et donc ne pas avoir de doublons.
 
 
-### Liens et notes
+## Notes
 
-- PHP MVC : https://www.sitepoint.com/the-mvc-pattern-and-php-1/
-- Hash et salt des mots de passe : https://openclassrooms.com/courses/securiser-les-mots-de-passe-des-utilisateurs-avec-php
-- Filtrer les infos utilisateur : https://openclassrooms.com/courses/les-filtres-en-php-pour-valider-les-donnees-utilisateur
-- Checklist : http://webdevchecklist.com/
-- Password php : https://www.sitepoint.com/hashing-passwords-php-5-5-password-hashing-api/
-- Clean inputs http://stackoverflow.com/questions/129677/whats-the-best-method-for-sanitizing-user-input-with-php
-- http://php.net/manual/en/features.file-upload.multiple.php
+Le projet à été pensé dès le début pour quelque chose de beaucoup plus ambitieux,
+et deviendra bien plus que ce qu'il est en ce moment. Toutefois, le résultat actuel
+permet d'apprécier les fonctionnalités les plus basiques, et reste satisfaisant.

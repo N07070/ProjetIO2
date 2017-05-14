@@ -13,12 +13,12 @@ function display_profile_page(){
             </h1>
             <br>
             <small><?php echo($user_data[0]['biography']); ?></small>
-            <p>Créateur de projet depuis le <?php echo($user_data[0]['date_creation']);?> </p>
+            <p>Créateur ou créatrice de projet depuis le <?php echo($user_data[0]['date_creation']);?> </p>
         </div>
         <hr>
     <?php
     } else {
-        echo("<h3> This profile does not exist. </h3>");
+        echo("<h3> Tu chercher un·e utilisateur·trice qui n'existe pas. </h3>");
     }
     display_options();
     display_projects_user();
@@ -44,7 +44,7 @@ function display_projects_user(){
             <div class="user_project card">
                 <img src="../uploads/projects/<?php echo($project['pictures'][0]); ?>" alt="">
                 <h3 class="project_title"><?php echo($project['title']); ?></h3>
-                <a class="btn primary_background" href="index.php?page=user&options=3&project=<?php echo($project['uuid']); ?>">Paramètres du projet</a>
+                <!-- <a class="btn primary_background" href="index.php?page=user&options=3&project=<?php echo($project['uuid']); ?>">Paramètres du projet</a> -->
                 <a class="btn primary_background" href="index.php?page=user&options=2&project=<?php echo($project['uuid']); ?>">Supprimer le projet</a>
             </div>
             <?php
@@ -77,7 +77,7 @@ function display_create_new_project(){
                 </ul>
             </p>
 
-            <h4>Consulte-le ici : <a class="btn primary_background" href="index.php/?page=project&project=<?php echo($result[1])?>"><?php echo $result[2]; ?></a></p>
+            <h4>Consulte-le ici : <a class="btn primary_background" href="/?page=project&project=<?php echo($result[1])?>"><?php echo $result[2]; ?></a></p>
             <?php
         }else {
             display_error($result['message']);
@@ -88,13 +88,13 @@ function display_create_new_project(){
         ?>
         <form class="" action="index.php?page=user&options=1" method="post" enctype="multipart/form-data">
             <input type="text" name="project_title" placeholder="Project Title" required><br>
-            <textarea name="project_resume" rows="6" cols="40" required>Project Resume (500 chars)</textarea><br>
-            <textarea name="project_description" rows="16" cols="40" required>Project Description (2000 chars)</textarea><br>
-            <p>Pictures for the project</p>
+            <textarea name="project_resume" rows="6" cols="40" maxlength="500" placeholder="Explique rapidement, en 500 caractères, les grandes lignes de ton projet." required></textarea><br>
+            <textarea name="project_description" rows="16" cols="40" maxlength="2000" placeholder="Explique plus en détails, en 2000 caractères, quels sont tes moyens, tes objectifs..." required></textarea><br>
+            <p>Les photos de présentation du projet.</p>
             <input type="file" name="profile_picture[]" placeholder="Picture" required><br>
             <input type="file" name="profile_picture[]" placeholder="Picture" required><br>
             <input type="file" name="profile_picture[]" placeholder="Picture" required><br>
-            <input type="text" name="project_tags" placeholder="the,project,tags," required><br>
+            <input type="text" name="project_tags" placeholder="Les tags du projet sous la forme tag,tag,tag," required><br>
 
             <input type="hidden" name="create_new_project" value="true" required>
             <input type="submit" value="Créer un nouveau projet">
@@ -121,70 +121,19 @@ function display_change_project_settings(){
 function display_change_user_settings(){
     // Change the settings
     if(isset($_POST['change_user_settings']) && $_POST['change_user_settings']) {
-        $result = update_user_profil($_SESSION["uuid"], $_POST['old_password'] , $_POST['password_1'] , $_POST['password_2'] , $_POST['email'], $_FILES, $_POST['biography']);
-        if ($result[0]) {
+        $result = update_user_profil($_SESSION["uuid"], $_POST['old_password'] , $_POST['password_1'] , $_POST['password_2'] , $_POST['email'], $_FILES['profile_picture'], $_POST['biography']);
+        if ($result['number'] != 1) {
             display_message("Ton compte à été mit à jour.");
+            display_profile_page($_SESSION['uuid']);
+
         } else {
-            display_error($result[1]);
+            display_error($result['message']);
+            require('../html/change_user_settings_form.php');
         }
     } else {
     // Display the form
-    ?>
-    <form class="" action="index.php?page=user&options=4" method="post">
-
-        <br>
-            <small> Ton mot de passe doit : faire 8 caractères de long, contenir une minuscule et une majuscule, un chiffre et un caractère non-alphabétique.</small>
-        <br>
-        <br>
-
-        <div class="group">
-            <input type="password" name="old_password" required><br>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Vieux mot de passe</label>
-        </div>
-
-        <div class="group">
-            <input type="password" name="password_1" required><br>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Mot de passe</label>
-        </div>
-
-        <div class="group">
-            <input type="password" name="password_2"  required><br>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Mot de passe (Confirmation)</label>
-        </div>
-
-
-        <div class="group">
-            <input type="email" name="email"required><br>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Courriel</label>
-        </div>
-
-        <p>Photo de profil</p>
-        <input type="file" name="profile_picture" placeholder="Profile Picture" required><br>
-
-        <div class="group">
-            <textarea name="biography" rows="8" cols="40" required>Ta biographie : parle de toi, raconte ta vie.</textarea><br>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-        </div>
-
-
-        <input type="hidden" name="change_user_settings" value="true" required>
-
-        <div class="group">
-            <input type="submit" value="signup">
-            <span class="highlight"></span>
-            <span class="bar"></span>
-        </div>
-    </form>
-    <?php
+    $user = get_user_data($_SESSION['uuid']);
+    require('../html/change_user_settings_form.php');
     }
 }
 
@@ -210,7 +159,7 @@ function user(){
                 break;
         }
     } else {
-        header('Location : index.php?page=login');
+        header('Location : ?page=login');
     }
     ?>
     </div>

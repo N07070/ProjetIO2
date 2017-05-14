@@ -25,5 +25,5 @@
         </div>
     </form>
 
-    <a href="index.php?page=login&forgot_password">Mot de passe oublié ?</a>
+    <!-- <a href="index.php?page=login&forgot_password">Mot de passe oublié ?</a> -->
 </div>

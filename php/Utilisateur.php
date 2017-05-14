@@ -171,7 +171,7 @@ function delete_user($uuid,$password){
             $database_connexion->execute(array(null,null,"deleted_user.png","[deleted]",0,0, $uuid));
             // Set the project to inactive and precise in the resume that the user is gone.
             $database_connexion->prepare('UPDATE projets SET is_featured = ?, status = ?, resume = ? WHERE owner = ?');
-            $database_connexion->execute(array(0,0,"The user has deleted his or her account.", $uuid));
+            $database_connexion->execute(array(0,0,"Cet utilisateur n'existe plus.", $uuid));
             // Replace all the user comments by "[deleted]"
             $database_connexion->prepare('UPDATE commentaires SET commentaire WHERE user = ?');
             $database_connexion->execute(array("[deleted]", $uuid));
@@ -188,7 +188,7 @@ function delete_user($uuid,$password){
 
 function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $email, $profile_picture, $biography){
     // TODO :
-    // Make it possible for the user to change his/her password, username.
+    // Make it possible for the user to change his/her username.
 
     try {
         $database_connexion = connect_to_database();
@@ -201,26 +201,10 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
     }
 
     // Is the password correct
-    if(password_verify($old_password,$password_hased)){
+    if(password_verify($old_password,$password_hased[0])){
 
         $error['number'] = 0; // no errors
         $error['message'] = "";
-
-        try {
-            $database_connexion = connect_to_database();
-            $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE username = ? ');
-            $req->execute(array($username));
-            $username_is_in_bdd = $req->fetchAll();
-            $req->closeCursor();
-        } catch (Exception $e) {
-            die('Error connecting to database: ' . $e->getMessage());
-        }
-
-        // the username exists
-        if(!empty($username_is_in_bdd)){
-            $error['number'] = 1;
-            $error['message'] = "Ce nom d'utilisateur existe déjà, tu peux en choisir un autre.";
-        }
 
         // the password matches the requirements
         // http://code.runnable.com/UmrnTejI6Q4_AAIM/how-to-validate-complex-passwords-using-regular-expressions-for-php-and-pcre
@@ -238,15 +222,24 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
         if($password_1 != $password_2){
             $error['number'] = 1;
             $error['message'] = "Les deux mots de passes ne correspondent pas.";
+            return $error;
         }
 
 
         if (empty($password_1) || !preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
             $error['number'] = 1;
             $error['message'] = "Ton mot de passe n'est pas assez bon ; il doit être tel que décrit plus bas.";
+            return $error;
         }
 
         // the email is available ?
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error['number'] = 1;
+            $error['message'] = "Cet email n'est pas valide.";
+            return $error;
+        }
+
+        // We need to check that the new email is not also the old one
         try {
             $req = $database_connexion->prepare('SELECT * FROM utilisateurs WHERE email = ? ');
             $req->execute(array($email));
@@ -256,67 +249,86 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
             die('Error connecting to database: ' . $e->getMessage());
         }
 
-        if(!empty($email_is_in_bdd) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
+        // If the UUID is the one of the user changing his email, then the email is
+        // valid.
+        // Otherwise, it means that the new email is already in use.
+        if($email_is_in_bdd[0]['email'] != $email){
             $error['number'] = 1;
-            $error['message'] = "Cet email n'est pas valide.";
+            $error['message'] = "Cet email est déjà utilisé.";
+            return $error;
         }
+
 
         // the biography isn't too long ?
         if (strlen(htmlspecialchars($biography)) > 500) {
-            $error['number'] = 1; // no errors
+            $error['number'] = 1;
             $error['message'] = "Ta biographie est trop longue. 500 caractères maximum.";
+            return $error;
         }
 
         // Beyond this point, loose all hope.
 
-        // The image for the profile is an image and is in the requirements
-        $target_dir = "../www/uploads/";
-        $target_file = $target_dir . basename($profile_picture["profile_picture"]["name"]);
-        $image_file_type = pathinfo($target_file,PATHINFO_EXTENSION);
+        // // The image for the profile is an image and is in the requirements
+        // $target_dir = "../www/uploads/";
+        // $target_file = $target_dir . basename($profile_picture["profile_picture"]["name"]);
+        // $image_file_type = pathinfo($target_file,PATHINFO_EXTENSION);
+        //
+        // // Check if image file is a actual image or fake image
+        // $check = getimagesize($profile_picture["profile_picture"]["tmp_name"]);
+        //
+        // print_r($profile_picture);
+        // print_r();
+        // print_r($target_file);
+        // print_r();
+        // print_r($image_file_type);
+        // print_r();
+        // print_r($check);
+        //
+        //
+        // if($check == false) {
+        //     $error['number'] = 1;
+        //     $error['message'] = "Ta photo de profil n'est pas valide.";
+        //     return $error;
+        // }
+        //
+        // // Check file size (5Mb)
+        // if ($profile_picture["profile_picture"]["size"] > 5000000) {
+        //     $error['number'] = 1;
+        //     $error['message'] = "Choisis une photo de profil de moins de 5Mb.";
+        //     return $error;
+        // }
+        //
+        // // Allow certain file formats
+        // if( $image_file_type!= "jpg" &&
+        //     $image_file_type != "png" &&
+        //     $image_file_type != "jpeg" &&
+        //     $image_file_type != "gif" ) {
+        //     $error['number'] = 1;
+        //     $error['message'] = "Tu dois utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
+        //     return $error;
+        // }
 
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($profile_picture["profile_picture"]["tmp_name"]);
-        if($check == false) {
-            $error['number'] = 1;
-            $error['message'] = "Ta photo de profil n'est pas valide.";
-        }
-
-
-        // Check if file already exists
-        // This error should never be shown, as the picture is named after
-        // the UUID of a user.
-        if (file_exists($target_file)) {
-            $error['number'] = 1;
-            $error['message'] = "Cette photo de profil existe déjà.";
-        }
-        // Check file size (5Mb)
-        if ($profile_picture["profile_picture"]["size"] > 5000000) {
-            $error['number'] = 1;
-            $error['message'] = "Choisis une photo de profil de moins de 5Mb.";
-        }
-
-        // Allow certain file formats
-        if($image_file_type!= "jpg" && $image_file_type != "png" &&
-        $image_file_type != "jpeg" &&
-        $image_file_type != "gif" ) {
-            $error['number'] = 1;
-            $error['message'] = "Tu dois utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
-        }
-
-
+        // Hash new password
+        $new_hashed_password = password_hash($password_1, PASSWORD_BCRYPT);
 
         try {
             $database_connexion = connect_to_database();
-            $database_connexion->prepare('UPDATE utilisateurs SET email = ?, profile_picture = ?, biography = ? WHERE uuid = ?');
-            $database_connexion->execute(array($email,$profile_picture,$biography, $uuid));
-
+            // $req = $database_connexion->prepare('UPDATE utilisateurs SET email = ?, profile_picture = ?, biography = ?, password = ? WHERE uuid = ?');
+            $req = $database_connexion->prepare('UPDATE utilisateurs SET email = ?, biography = ?, password = ? WHERE uuid = ?');
+            // $req->execute(array($email,$profile_picture,$biography, $new_hashed_password, $uuid));
+            $req->execute(array($email,$biography, $new_hashed_password, $uuid));
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
         }
-        return true;
+
+        $error['number'] = 0;
+        $error['message'] = "Tes informations ont été mises à jour !";
+        return $error;
     } else {
-        return false;
+        $error['number'] = 1;
+        $error['message'] = "Ton ancien mot de passe n'ai pas bon.";
+        return $error;
     }
 }
 

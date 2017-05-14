@@ -26,7 +26,7 @@ function login_signup_user($option,$username, $password_1, $password_2, $email, 
         if($option == 'login_user'){
 
             if(!login_user($username,$password_1)){
-                throw_error(401);
+                display_error("Mot de passe ou pseudo erroné.");
                 display_login_form();
             }else {
                 // Create sessions
@@ -39,7 +39,7 @@ function login_signup_user($option,$username, $password_1, $password_2, $email, 
         } elseif ($option == 'signup_user' ) {
             $result = create_new_user($username, $password_1, $password_2, $email, $profile_picture, $biography);
             if(gettype($result) == "boolean" && $result){
-                display_message("Signup successfull ! Welcome !");
+                display_message("Inscription réussite, bienvenue !");
                 display_login_form();
             }else {
                 display_error($result);

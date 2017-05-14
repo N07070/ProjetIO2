@@ -7,7 +7,9 @@ function display_search_results($terms,$options){
     if(empty($results)){
         ?>
         <div class="card">
-            <p>Nothing of value was lost. ( Or found ).</p>
+            <p> Grumpy Cat n'a rien trouvé d'intéressant. Et il s'en fout. </p>
+            <img src="img/grumpy_cat.png"><br>
+            <small>Dessin par <a rel="nofollow" href="http://tsaoshin.deviantart.com/">TaoShin</a></small>
         </div>
         <?php
     } else {
@@ -21,11 +23,13 @@ function display_search_form(){
     // Number of users
     // Popularity
     ?>
-    <form class="card no_hover" action="index.php?page=search" method="post" enctype="multipart/form-data">
-        <input type="text" name="terms" placeholder="Nom du projet, utilisateur..." required><br>
-        <!-- <input type="hidden" name="options" value="signup_user" required> -->
-        <input type="submit" name="search" value="search">
-    </form>
+    <div class="card">
+        <form class=" no_hover" action="index.php?page=search" method="post" enctype="multipart/form-data">
+            <input type="text" name="terms" placeholder="Nom du projet, utilisateur..." required><br>
+            <!-- <input type="hidden" name="options" value="signup_user" required> -->
+            <input type="submit" name="search" value="Chercher">
+        </form>
+    </div>
     <?php
 }
 

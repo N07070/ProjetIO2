@@ -43,9 +43,10 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     }
 
 
+    // Test password : 1&Aazzzz
     if (empty($password_1) || !preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
         $error['number'] = 1;
-        $error['message'] = "Ton mot de passe n'est pas assez bon ; il être tel que décrit plus bas.";
+        $error['message'] = "Ton mot de passe n'est pas assez bon ; il doit être tel que décrit plus bas.";
     }
 
     // the email is available ?
@@ -60,7 +61,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
 
     if(!empty($email_is_in_bdd) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
         $error['number'] = 1;
-        $error['message'] = "Cet email n'est pas valide.";
+        $error['message'] = "Cet email n'est pas valide, ou il est déjà utilisé.";
     }
 
     // the biography isn't too long ?
@@ -89,12 +90,12 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     // the UUID of a user.
     if (file_exists($target_file)) {
         $error['number'] = 1;
-        $error['message'] = "Cette photo de profile existe déjà.";
+        $error['message'] = "Cette photo de profil existe déjà.";
     }
     // Check file size (5Mb)
     if ($_FILES["profile_picture"]["size"] > 5000000) {
         $error['number'] = 1;
-        $error['message'] = "Choisit une photo de profil de moins de 5Mb.";
+        $error['message'] = "Choisis une photo de profil de moins de 5Mb.";
     }
 
     // Allow certain file formats
@@ -102,7 +103,7 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
     $image_file_type != "jpeg" &&
     $image_file_type != "gif" ) {
         $error['number'] = 1;
-        $error['message'] = "Tu doit utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
+        $error['message'] = "Tu dois utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
     }
 
     if (!$error['number']) {
@@ -242,7 +243,7 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
 
         if (empty($password_1) || !preg_match_all('$\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$', $password_1)){
             $error['number'] = 1;
-            $error['message'] = "Ton mot de passe n'est pas assez bon ; il être tel que décrit plus bas.";
+            $error['message'] = "Ton mot de passe n'est pas assez bon ; il doit être tel que décrit plus bas.";
         }
 
         // the email is available ?
@@ -277,7 +278,7 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
         $check = getimagesize($profile_picture["profile_picture"]["tmp_name"]);
         if($check == false) {
             $error['number'] = 1;
-            $error['message'] = "Ta photo de profile n'est pas valide.";
+            $error['message'] = "Ta photo de profil n'est pas valide.";
         }
 
 
@@ -286,12 +287,12 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
         // the UUID of a user.
         if (file_exists($target_file)) {
             $error['number'] = 1;
-            $error['message'] = "Cette photo de profile existe déjà.";
+            $error['message'] = "Cette photo de profil existe déjà.";
         }
         // Check file size (5Mb)
         if ($profile_picture["profile_picture"]["size"] > 5000000) {
             $error['number'] = 1;
-            $error['message'] = "Choisit une photo de profil de moins de 5Mb.";
+            $error['message'] = "Choisis une photo de profil de moins de 5Mb.";
         }
 
         // Allow certain file formats
@@ -299,7 +300,7 @@ function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $e
         $image_file_type != "jpeg" &&
         $image_file_type != "gif" ) {
             $error['number'] = 1;
-            $error['message'] = "Tu doit utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
+            $error['message'] = "Tu dois utiliser des JPEG, GIF ou PNG pour ta photo de profil uniquement.";
         }
 
 

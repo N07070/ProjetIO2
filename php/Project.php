@@ -312,6 +312,11 @@ function get_project_data($project){
     }
 }
 
+function get_nbr_participants($project_uuid){
+    $a = get_project_data($project_uuid);
+    return count(explode(',', $a[0]["participants"])) - 1; // Because the last item of the array is empty.
+}
+
 function upvote_project($project, $user){
     // TODO : Add limitation to the number of upvotes a user can give to a project
     if(project_exists($project) && UUID::is_valid($user) && user_exits($user)){

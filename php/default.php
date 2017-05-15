@@ -130,7 +130,7 @@ function display_homepage($projects_to_display){
             $one_project['pictures'] = explode(",", $one_project['pictures']);
             ?>
             <a href='index.php?page=project&project=<?php echo($one_project['uuid']) ?>'>
-                <div class='featured_project_main a_project card'>
+                <div class='featured_project_main a_project card_project'>
                 <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
                     <div class="text_project_main">
                         <h2 class='title_project'>
@@ -165,7 +165,7 @@ function display_homepage($projects_to_display){
             $one_project['pictures'] = explode(",", $one_project['pictures']);
             ?>
 
-                <div class='project_main a_project card'>
+                <div class='project_main a_project card_project'>
                     <a href='index.php?page=project&project=<?php echo($one_project["uuid"]) ?>'>
                     <img width="100" src="<?php echo("uploads/projects/".$one_project['pictures'][0]); ?>" alt="The first picture of the project">
                     <div class="text_project_main">

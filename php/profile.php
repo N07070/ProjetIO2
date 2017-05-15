@@ -4,36 +4,38 @@ require_once('Utilisateur.php');
 require_once('Project.php');
 require_once('UUID.php');
 
-function display_user_profile($uuid){
+function display_profile_page($uuid){
     $user_data = get_user_data($uuid);
     if(!empty($user_data)){
     ?>
-        <h1 class="username_profile">
-            <?php echo($user_data[0]['username']);?>
-        </h1>
-
-        <?php echo("<img class='user_picture_profile' height='200' src='../uploads/".$user_data[0]['profile_picture']."'>");?>
-
-        <ul>
-            <li><?php echo($user_data[0]['biography']); ?></li>
-        </ul>
+        <div class="user_information">
+            <img height='200' src='../uploads/<?php echo($user_data[0]['profile_picture']); ?>'>
+            <h1><?php echo($user_data[0]['username']);?></h1>
+            <small><i><?php echo($user_data[0]['biography']); ?></i></small>
+            <p>Créateur ou créatrice de projet depuis le <?php echo($user_data[0]['date_creation']);?> </p>
+        </div>
+        <hr>
     <?php
     } else {
-        echo("<h3> This profile does not exist. </h3>");
+        echo("<h3> Tu chercher un·e utilisateur·trice qui n'existe pas. </h3>");
     }
 }
 
-function display_projects_user($user){
-    $projects = get_projects_of_user($user);
+function display_projects_user($uuid){
+    $projects = get_projects_of_user($uuid);
 
     if($projects != false){
         foreach ($projects as $project) {
+            $project['pictures'] = explode("," ,$project['pictures']);
             ?>
-            <div class="project">
-                <h3 class="project_title"><?php echo($project['title']); ?></h3>
-                <?php if($_SESSION['login']){ ?>
-                <a href="index.php?page=profile&options=1&project=<?php echo($project['uuid']);?>&user=<?php echo($_SESSION['uuid']);?>"> Join project </a>
-                <?php } ?>
+            <div class="user_project card">
+                <img src="../uploads/projects/<?php echo($project['pictures'][0]); ?>" alt="Picture of the project">
+                <div>
+                    <a href="?page=project&project=<?php echo($project['uuid']); ?>"><h3 class="project_title"><?php echo($project['title']); ?></h3></a>
+                    <p><?php echo($project['resume']); ?>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <?php //echo(count(explode(',',$project["participants"])) - 1); ?>
+                    <p>Déjà <?php echo(get_nbr_participants($project['uuid'])); ?> participant·es </p>
+                </div>
             </div>
             <?php
         }
@@ -41,10 +43,13 @@ function display_projects_user($user){
 
 }
 
+
 function profile(){
     if(isset($_GET['user']) && UUID::is_valid($_GET['user'])){
-        display_user_profile($_GET['user']);
+        ?> <div class="card profile"><?php
+        display_profile_page($_GET['user']);
         display_projects_user($_GET['user']);
+        ?> </div> <?php
     } else {
         header("Location : index.php");
     }

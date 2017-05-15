@@ -39,7 +39,7 @@ function display_project($project){
                         </span>
 
                         <span onclick="downvote_project('<?php echo($project['id']); ?>','<?php echo($project['uuid']); ?>')">
-                            <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_up</i><br><span class="downvotes"><?php echo($project['nbr_downvote']);?></span></button>
+                            <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_down</i><br><span class="downvotes"><?php echo($project['nbr_downvote']);?></span></button>
                         </span>
 
                         <span onclick="join_project('<?php echo($project['uuid']); ?>')">
@@ -62,21 +62,34 @@ function display_project($project){
                             <?php
 
                             if(sizeof($project['participants']) > 4){
+                                ?> <p class="participants_to_project"><?php
                                 $first_participiants[] = $project['participants'][0];
                                 $first_participiants[] = $project['participants'][1];
                                 $first_participiants[] = $project['participants'][2];
                                 $first_participiants[] = $project['participants'][3];
 
                                 foreach ($first_participiants as $participants) {
-                                    ?> <span class=""><?php echo(get_user_from_uuid($participants)); ?>,</span> <?php
+                                    echo(get_user_from_uuid($participants).",");
                                 }
-                                ?> <span> et <?php echo(sizeof($project['participants']) - 4 ); ?> autres participent au projet.</span> <?php
+                                ?> et <?php echo(sizeof($project['participants']) - 4 ); ?> autres participent au projet.
+                                </p>
+                                <?php
                             } else {
-                                for ($i=0; $i < sizeof($project['participants']) - 1; $i++) {
-                                    ?> <span class="project_participant"><?php echo(get_user_from_uuid($project['participants'][$i])); ?>,</span> <?php
-                                }
-                                if(sizeof($project['participants'] > 1)) {
-                                ?> <span class="project_participant">et <?php echo(get_user_from_uuid(end($project['participants'   ])))?> participent au projet</span> <?php
+                                if(sizeof($project['participants']) == 1){
+                                    ?>
+                                    <p class="participants_to_project">
+                                    <?php echo(get_user_from_uuid($project['participants'][0])); ?> participe à ce projet.
+                                    </p>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <p class="participants_to_project">
+                                    <?php
+                                    for ($i = 0; $i < sizeof($project['participants']) - 1; $i++) {
+                                        echo(get_user_from_uuid($project['participants'][$i]).',');
+                                    }
+                                    ?> et <?php echo(get_user_from_uuid(end($project['participants'])).' participent au projet');
+                                    ?> </p> <?php
                                 }
                             }
 

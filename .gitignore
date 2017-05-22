@@ -4,6 +4,10 @@ www/uploads/*.png
 www/uploads/*.gif
 
 www/uploads/projects/*.jpg
+www/uploads/projects/*.JPG
 www/uploads/projects/*.jpeg
-www/uploads/projects/*.png
+www/uploads/projects/*.JPEG
 www/uploads/projects/*.gif
+www/uploads/projects/*.GIF
+www/uploads/projects/*.PNG
+www/uploads/projects/*.png

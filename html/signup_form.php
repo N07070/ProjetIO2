@@ -3,7 +3,7 @@
     <h2>S'inscrire</h2>
     <form action="index.php?page=login" method="post" enctype="multipart/form-data">
         <div class="group">
-            <input type="text" maxlength="20" name="username" required><br>
+            <input type="text" maxlength="20" name="username" autofocus required><br>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>Nom d'utilisateur</label>

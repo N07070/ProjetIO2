@@ -3,6 +3,7 @@
         <ul>
             <li><a href="index.php"><i class="material-icons">home</i></a></li>
             <li><a href="../index.php?page=user"><i class="material-icons">account_circle</i></a></li>
+            <li><a href="../index.php?page=messages"><i class="material-icons">question_answer</i></a></li>
             <li><a href="../index.php?page=search"><i class="material-icons">search</i></a></li>
             <li><a href="../index.php?page=logout"><i class="material-icons">launch</i></a></li>
         </ul>

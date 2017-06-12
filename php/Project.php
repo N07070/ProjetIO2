@@ -4,6 +4,14 @@ require_once("ConnectionBaseDeDonnee.php");
 
 function create_new_project($owner, $title, $tags, $pictures, $resume, $description){
 
+    // Sanitise input
+    $title = htmlspecialchars(strip_tags($title));
+    $tags = htmlspecialchars(strip_tags($tags));
+    $resume = htmlspecialchars(strip_tags($resume));
+    $description = htmlspecialchars(strip_tags($description));
+
+
+
     // In case there is a mistake
     $error = [];
     $error["number"] = 0;
@@ -262,7 +270,7 @@ function pictures_are_valid($pictures){
 
 function resume_is_valid($resume){
     $resume = htmlspecialchars($resume);
-    if (strlen($resume) < 501) {
+    if (strlen($resume) < 601) { // Tolerance in case a char gets transformed. For example, & = &amp
         return true;
     } else{
         return false;
@@ -271,7 +279,7 @@ function resume_is_valid($resume){
 
 function description_is_valid($description){
     $description = htmlspecialchars($description);
-    if (strlen($description) < 2001) {
+    if (strlen($description) < 2501) { // Tolerance in case a char gets transformed. For example, & = &amp
         return true;
     } else{
         return false;
@@ -446,5 +454,17 @@ function downvote_project($project, $user){
         return "false";
     }
 }
+
+function update_project($owner, $title, $tags, $pictures, $resume, $description){
+
+    $title = htmlspecialchars(strip_tags($title));
+    $tags = htmlspecialchars(strip_tags($tags));
+    $resume = htmlspecialchars(strip_tags($resume));
+    $description = htmlspecialchars(strip_tags($description));
+
+    return false;
+
+}
+
 
 ?>

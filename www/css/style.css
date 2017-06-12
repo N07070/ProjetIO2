@@ -270,7 +270,7 @@ nav a {
 
 .user_project div {
     padding-left: 9em;
-    
+
 
 }
 
@@ -351,6 +351,12 @@ nav a {
     border-radius: 8%;
 }
 
+.project_page .tag:hover {
+    background-color: #00897B;
+    transition-duration: 0.5s;
+}
+
+
 .title_project {
     margin-top: 1em;
     margin-bottom: 0.1em;
@@ -358,6 +364,35 @@ nav a {
 
 .project_page .title_project {
     margin-bottom: none;
+}
+
+/* --- messages --- */
+
+.group_user_last_message {
+    font-weight: bold;
+    color: #03A9F4;
+}
+
+.group {
+    max-width: 20em;
+    max-height: 5em;
+}
+
+.group h2 {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    font-size: 1.2em;
+}
+
+.group p {
+    margin: 0;
+    padding: 0;
+}
+.group i {
+    font-size: 1.2em;
+    padding: 0;
+    margin: 0;
 }
 
 /* --- login page --- */

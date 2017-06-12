@@ -1,12 +1,14 @@
 <form class="" action="index.php?page=user&options=4" method="post">
 
+    <h2>Mettre à jour mes informations</h2>
+
     <br>
         <small> Ton mot de passe doit : faire 8 caractères de long, contenir une minuscule et une majuscule, un chiffre et un caractère non-alphabétique.</small>
     <br>
     <br>
 
     <div class="group">
-        <input type="password" name="old_password" required><br>
+        <input type="password" name="old_password" autofocus required><br>
         <span class="highlight"></span>
         <span class="bar"></span>
         <label>Vieux mot de passe</label>

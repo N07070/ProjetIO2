@@ -118,6 +118,20 @@ function display_change_project_settings(){
 
 }
 
+function display_delete_user(){
+    echo("<hr>");
+    if(isset($_SESSION['uuid']) && isset($_SESSION['login']) && isset($_POST['password']) && !empty($_POST["password"])){
+        if(delete_user($_SESSION['uuid'],$_POST['password'])){
+            header("Location: ?page=logout");
+        } else {
+            display_error("Une erreure est survenue en supprimant ton compte. Réessaye ?");
+        }
+    } else {
+        require('../html/delete_user.php');
+    }
+
+}
+
 function display_change_user_settings(){
     // Change the settings
     if(isset($_POST['change_user_settings']) && $_POST['change_user_settings']) {
@@ -134,6 +148,7 @@ function display_change_user_settings(){
     // Display the form
     $user = get_user_data($_SESSION['uuid']);
     require('../html/change_user_settings_form.php');
+    display_delete_user();
     }
 }
 
@@ -154,6 +169,10 @@ function user(){
                 break;
             case 4:
                 display_change_user_settings();
+                break;
+            case 5:
+                display_delete_user();
+                break;
             default:
                 echo('');
                 break;

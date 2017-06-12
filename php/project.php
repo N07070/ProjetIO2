@@ -29,17 +29,17 @@ function display_project($project){
                     </div>
 
                     <div>
-                        <h1 class="title_project"> <?php echo($project['title']) ?> <?php if ($project['is_featured']): ?><i class="material-icons ">star_border</i><?php endif; ?></h1>
+                        <h1 class="title_project"><?php if (!$project['status']): ?><i class="material-icons">not_interested</i><?php endif; ?> <?php echo($project['title']) ?> <?php if ($project['is_featured']): ?><i class="material-icons ">star_border</i><?php endif; ?></h1>
                         <small class="resume_project"> <?php echo($project['resume']) ?> </small><br>
-                        <?php if ($_SESSION['login']) { ?>
+                        <?php if ($_SESSION['login'] && $project['status'] ) { ?>
 
 
                         <span onclick="upvote_project('<?php echo($project['id']); ?>','<?php echo($project['uuid']); ?>')">
-                            <button id="upvote_project" class="fab light_background"><i class="material-icons ">thumb_up</i><br><span class="upvotes"><?php echo($project['nbr_upvote']);?></span></button>
+                            <button id="upvote_project" class="fab light_background"><i class="material-icons ">thumb_up</i><br><span id="upvotes_<?php echo($project['id']); ?>"><?php echo($project['nbr_upvote']);?></span></button>
                         </span>
 
                         <span onclick="downvote_project('<?php echo($project['id']); ?>','<?php echo($project['uuid']); ?>')">
-                            <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_down</i><br><span class="downvotes"><?php echo($project['nbr_downvote']);?></span></button>
+                            <button id="downvote_project" class="fab light_background"><i class="material-icons ">thumb_down</i><br><span id="downvotes_<?php echo($project['id']); ?>"><?php echo($project['nbr_downvote']);?></span></button>
                         </span>
 
                         <span onclick="join_project('<?php echo($project['uuid']); ?>')">
@@ -51,9 +51,11 @@ function display_project($project){
                             } ?>
                             </button>
                         </span>
-                        <?php } else {
+                        <?php } elseif ( $project['status'] ){
                             display_message("Connecte toi pour participer à ce projet ! ;-)");
-                        } ?>
+                        } else {
+                            display_message("Ce projet est inactif.");
+                        }?>
 
                         <p class="description_project">
                             <?php echo($project['description']); ?>
@@ -99,10 +101,10 @@ function display_project($project){
                         <br>
                         <div class="tags">
                             <?php  foreach ($project['tags'] as $tag) { ?>
-                                <span class="tag"><?php echo($tag); ?></span>
+                                <a href="?page=search&q=<?php echo($tag); ?>"><span class="tag"><?php echo($tag); ?></span></a>
                             <?php }  ?>
                         </div><br>
-                        <span class="dates"> Crée le <?php echo($project['creation_date']) ?> et actif jusqu'au <?php echo($project['limit_date']) ?></span><br>
+                        <span class="dates"> Créé le <?php echo($project['creation_date']) ?> et actif jusqu'au <?php echo($project['limit_date']) ?></span><br>
                     </div>
                 </div>
                 <?php

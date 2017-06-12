@@ -56,7 +56,7 @@ if(isset($_GET["page"]) && !empty($_GET["page"])){
             require("../html/header.php");
             require("../html/navigation.php");
             require("../php/messages.php");
-
+            messages();
             require("../html/footer.php");
             break;
         default:

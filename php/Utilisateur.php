@@ -1,5 +1,5 @@
 <?php
-
+// 1&Aazzzz
 require_once('UUID.php');
 
 // Create a new user in the database
@@ -7,6 +7,11 @@ function create_new_user($username, $password_1, $password_2, $email, $profile_p
 
     $error['number'] = 0; // no errors
     $error['message'] = "";
+
+    // Sanitise input
+    $username = htmlspecialchars(strip_tags($username));
+    $email = htmlspecialchars(strip_tags($email));
+    $biography = htmlspecialchars(strip_tags($biography));
 
     try {
         $database_connexion = connect_to_database();
@@ -159,23 +164,34 @@ function delete_user($uuid,$password){
     }
 
     // Is the password correct
-    if(password_verify($password,$password_hased)){
+    print_r($uuid);
+    echo("");
+    print_r($password);
+    print_r();
+    print_r($password_hased);
+
+    if(password_verify($password,$password_hased['password'])){
+        echo "bite";
         try {
             $database_connexion = connect_to_database();
+
+            // Set the project to inactive and precise in the resume that the user is gone.
+            $req = $database_connexion->prepare('UPDATE projets SET is_featured = ?, status = ?, resume = ? WHERE owner = ?');
+            $req->execute(array(0,0,"Ce projet est inactif, car le créateur est parti vers d'autres horizons.", $uuid));
+            $req->closeCursor();
+
             // Delete the user
             // - Set his profile picture to a grey background,
             // - Set his password and email to null
             // - Set this biography to [deleted]
             // - Set his admin and premium status to 0.
-            $database_connexion->prepare('UPDATE utilisateurs SET email = ?, password = ?, profile_picture = ?, biography = ?, is_admin = ?, is_premium = ? WHERE uuid = ?');
-            $database_connexion->execute(array(null,null,"deleted_user.png","[deleted]",0,0, $uuid));
-            // Set the project to inactive and precise in the resume that the user is gone.
-            $database_connexion->prepare('UPDATE projets SET is_featured = ?, status = ?, resume = ? WHERE owner = ?');
-            $database_connexion->execute(array(0,0,"Cet utilisateur n'existe plus.", $uuid));
-            // Replace all the user comments by "[deleted]"
-            $database_connexion->prepare('UPDATE commentaires SET commentaire WHERE user = ?');
-            $database_connexion->execute(array("[deleted]", $uuid));
+            $req = $database_connexion->prepare('UPDATE utilisateurs SET email = ?, password = ?, profile_picture = ?, biography = ?, is_admin = ?, is_premium = ? WHERE uuid = ?');
+            $req->execute(array(null,null,"deleted_user.jpg","[deleted]",0,0, $uuid));
+            $req->closeCursor();
 
+            // Replace all the user comments by "[deleted]"
+            $req = $database_connexion->prepare('UPDATE commentaires SET commentaire = ? WHERE user = ?');
+            $req->execute(array("[deleted]", $uuid));
             $req->closeCursor();
         } catch (Exception $e) {
             die('Error connecting to database: ' . $e->getMessage());
@@ -189,6 +205,10 @@ function delete_user($uuid,$password){
 function update_user_profil($uuid, $old_password, $password_1 , $password_2 , $email, $profile_picture, $biography){
     // TODO :
     // Make it possible for the user to change his/her username.
+
+    // Sanitise input
+    $email = htmlspecialchars(strip_tags($email));
+    $biography = htmlspecialchars(strip_tags($biography));
 
     try {
         $database_connexion = connect_to_database();

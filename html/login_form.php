@@ -3,7 +3,7 @@
     <br>
     <form action="index.php?page=login" method="post">
         <div class="group">
-            <input type="text" name="username" required><br>
+            <input type="text" name="username" autofocus required><br>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>Nom d'utilisateur</label>

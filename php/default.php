@@ -8,7 +8,7 @@ function get_all_projects($start){
     if(isset($start) && $start > 0 && !empty($start)){
         // Get the $start
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() LIMIT ? ,200 ');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() AND status = 1 LIMIT ? ,200 ');
             $req->execute(array($start * 10));
             $projects = $req->fetchAll();
             $req->closeCursor();
@@ -17,7 +17,7 @@ function get_all_projects($start){
         }
     }else {
         try {
-            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() LIMIT 200');
+            $req = $database_connexion->prepare('SELECT * FROM projets WHERE limit_date > NOW() AND status = 1 LIMIT 200');
             $req->execute();
             $projects = $req->fetchAll();
             $req->closeCursor();

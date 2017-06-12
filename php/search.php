@@ -37,6 +37,9 @@ function search(){
     if(isset($_POST['search'])){
         display_search_form();
         display_search_results($_POST['terms'],$_POST['options']);
+    } elseif (isset($_GET['q']) && !empty($_GET['q'])) {
+        display_search_form();
+        display_search_results($_GET['q'],$_GET['options']);
     } else {
         display_search_form();
     }

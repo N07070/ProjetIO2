@@ -33,7 +33,7 @@ function display_error($error_message){
 
 function display_message($message){
     ?>
-    <div class='card message light_background'>
+    <div class='card notification light_background'>
             <i class="material-icons">help_outline</i><span><?php echo($message) ?></span>
     </div>
     <?php

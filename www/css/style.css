@@ -5,7 +5,7 @@ html {
     padding-left: 25%;
     padding-right: 25%;
     width: 50%;
-    background-color: #FFF;
+    background-color: #eeeeee;
     font-family: "Liberation Sans", sans-serif;
     color : #000;
 }
@@ -366,7 +366,9 @@ nav a {
     margin-bottom: none;
 }
 
+/* ---------------- */
 /* --- messages --- */
+/* ---------------- */
 
 .group_user_last_message {
     font-weight: bold;
@@ -393,6 +395,58 @@ nav a {
     font-size: 1.2em;
     padding: 0;
     margin: 0;
+}
+
+.conversation {
+    display: inline-block;
+}
+
+#group_header {
+    background: #cfd8dc;
+}
+
+.message {
+    display: inline-block;
+    padding: 1em;
+}
+
+.message small {
+    display: inline;
+    font-size: 0.3em;
+    transition-duration: 0.7s;
+
+}
+.message small:hover {
+    font-size: 1em;
+}
+
+#writing-bubble {
+
+}
+
+.bubble {
+    margin-top: 1em;
+    border-radius: 30px;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    clear: both;
+    color: white;
+    background-color: #607d8b;
+    max-width: 60%;
+    display: inline-block;
+}
+
+.left {
+    float: left;
+    border-bottom-left-radius: 0px;
+}
+
+.right {
+    text-align: right;
+    float: right;
+    border-bottom-right-radius: 0px;
+    background-color: #78909c;
+
 }
 
 /* --- login page --- */
@@ -533,14 +587,14 @@ input[type=submit] {
     padding-right: 1em;
 }
 
-.message {
+.notification {
     color: white;
     margin-bottom: 1em;
     font-weight: lighter;
     padding: 1em;
 }
 
-.message .material-icons {
+.notification .material-icons {
     padding-right: 1em;
 }
 

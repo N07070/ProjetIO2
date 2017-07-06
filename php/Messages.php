@@ -95,4 +95,43 @@ function group_exists($group_uuid){
 
 }
 
+function create_new_group($name, $first_user, $options) {
+
+    $v4uuid = UUID::v4();
+
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('INSERT INTO groups(uuid, name, users, creation_date) VALUES(?,?, ? ,NOW())');
+        $req->execute(array($v4uuid, $name, $first_user.","));
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+}
+
+function add_user_to_group($user, $group_uuid){
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('SELECT users FROM `groups` WHERE `uuid` = ?');
+        $req->execute(array($group_uuid));
+        $group_members = $req->fetchAll();
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+    $group_members[0]['users'] .= $user . ",";
+    
+    try {
+        $database_connexion = connect_to_database();
+        $req = $database_connexion->prepare('UPDATE groups SET users = ? WHERE uuid = ?');
+        $req->execute(array($group_members[0], $group_uuid));
+        $req->closeCursor();
+    } catch (Exception $e) {
+        die('Error connecting to database: ' . $e->getMessage());
+    }
+
+
+}
+
 ?>

@@ -1,6 +1,7 @@
 <?php
 require_once("Utilisateur.php");
 require_once("ConnectionBaseDeDonnee.php");
+require_once("Messages.php");
 
 function create_new_project($owner, $title, $tags, $pictures, $resume, $description){
 
@@ -128,6 +129,10 @@ function create_new_project($owner, $title, $tags, $pictures, $resume, $descript
 
     $results = [1,$v4uuid,$title];
 
+    // Create a new messaging group
+    // TODO
+    create_new_group($title, $owner, null);
+
     return $results;
 
 }
@@ -154,6 +159,10 @@ function add_user_to_project($uuid,$project){
         } catch (Exception $e) {
             die("Error connecting to the database " . $e->getMessage());
         }
+
+        // Add the user to the messaging group
+        // TODO
+        add_user_to_group();
 
         return true;
     }
